@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  gateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=7777
+    ports:
+      - "7777"
+
+  sales-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8090
+    ports:
+      - "8090"
+

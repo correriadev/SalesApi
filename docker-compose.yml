@@ -1,0 +1,50 @@
+version: '3.3'
+
+services:
+  gateway:
+    image: ocelot-gateway
+    build:
+      context: .
+      dockerfile: src/Gateway/Dockerfile
+    container_name: ocelot-gateway
+    ports:
+      - "0.0.0.0:7777:7777"
+    environment:
+      - ASPNETCORE_URLS=http://+:7777
+    depends_on:
+      - sales-api
+    networks:
+      - evaluation-network
+
+  sales-api:
+    image: sales-api
+    build:
+      context: .
+      dockerfile: src/SalesApi/Dockerfile
+    container_name: sales-api
+    depends_on:
+      - db
+    ports:
+      - "8090:8090"
+    environment:
+      - ConnectionStrings__SalesApiDb=Host=db;Database=SalesApiDb;Username=postgres;Password=admin
+    networks:
+      - evaluation-network
+    tty: true
+
+  db:
+    image: postgres:latest
+    container_name: db
+    environment:
+      POSTGRES_DB: SalesApiDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    networks:
+      - evaluation-network
+
+networks:
+  evaluation-network:
+    external: true
+  
