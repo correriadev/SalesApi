@@ -10,18 +10,18 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Directory.Packages.props", "."]
-COPY ["src/SalesApi/SalesApi.csproj", "src/SalesApi/"]
-COPY ["src/SalesApi.Domain/SalesApi.Domain.csproj", "src/SalesApi.Domain/"]
-COPY ["src/SalesApi.Infrastructure/SalesApi.Infrastructure.csproj", "src/SalesApi.Infrastructure/"]
-RUN dotnet restore "./src/SalesApi/SalesApi.csproj"
+COPY ["src/SalesApi/SalesApi.WebApi/SalesApi.WebApi.csproj", "src/SalesApi/SalesApi.WebApi/"]
+COPY ["src/SalesApi/SalesApi.Domain/SalesApi.Domain.csproj", "src/SalesApi.Domain/"]
+COPY ["src/SalesApi/SalesApi.Infrastructure/SalesApi.Infrastructure.csproj", "src/SalesApi.Infrastructure/"]
+RUN dotnet restore "./src/SalesApi/SalesApi.WebApi/SalesApi.WebApi.csproj"
 COPY . .
-WORKDIR "/src/src/SalesApi"
-RUN dotnet build "./SalesApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/src/SalesApi/SalesApi.WebApi"
+RUN dotnet build "./SalesApi.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./SalesApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./SalesApi.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
@@ -30,4 +30,4 @@ COPY --from=publish /app/publish .
 
 ENV ASPNETCORE_URLS=http://+:8090
 
-ENTRYPOINT ["dotnet", "SalesApi.dll"]
+ENTRYPOINT ["dotnet", "SalesApi.WebApi.dll"]
