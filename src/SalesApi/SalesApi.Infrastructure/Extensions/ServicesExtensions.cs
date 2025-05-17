@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using HealthChecks.NpgSql;
+using HealthChecks.MongoDb;
 using System.Text.Json;
 using System.Text;
 
@@ -17,9 +18,14 @@ public static class ServicesExtensions
             .AddNpgSql(
                 configuration.GetConnectionString("SalesApiDb")!,
                 name: "postgres",
-                
                 tags: new[] { "database", "postgres" },
                 timeout: TimeSpan.FromSeconds(configuration.GetValue<int>("HealthChecks:Database:Timeout"))
+            )
+            .AddMongoDb(
+                configuration.GetConnectionString("MongoDb")!,
+                name: "mongodb",
+                tags: new[] { "database", "mongodb" },
+                timeout: TimeSpan.FromSeconds(configuration.GetValue<int>("HealthChecks:MongoDb:Timeout"))
             );
 
         return services;

@@ -1,9 +1,14 @@
 {
   "ConnectionStrings": {
-    "SalesApiDb": "Host=localhost;Database=SalesApiDb;Username=postgres;Password=admin"
+    "SalesApiDb": "Host=localhost;Port=5432;Database=SalesApiDb;Username=postgres;Password=postgres",
+    "MongoDb": "mongodb://localhost:27017"
   },
   "HealthChecks": {
     "Database": {
+      "Enabled": true,
+      "Timeout": 5
+    },
+    "MongoDb": {
       "Enabled": true,
       "Timeout": 5
     }

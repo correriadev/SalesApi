@@ -9,6 +9,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Npgsql" />
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
+    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SalesApi.Domain\SalesApi.Domain.csproj" />

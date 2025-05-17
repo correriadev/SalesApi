@@ -10,5 +10,7 @@
     <PackageVersion Include="Npgsql" Version="8.0.3" />
     <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="7.0.0" />
     <PackageVersion Include="System.Text.Json" Version="8.0.2" />
+    <PackageVersion Include="MongoDB.Driver" Version="2.24.0" />
+    <PackageVersion Include="AspNetCore.HealthChecks.MongoDb" Version="7.0.0" />
   </ItemGroup>
 </Project> 

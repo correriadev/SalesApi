@@ -7,24 +7,23 @@ EXPOSE 7777
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Directory.Packages.props", "."]
 COPY ["src/Gateway/Gateway.csproj", "src/Gateway/"]
-RUN dotnet restore "./src/Gateway/Gateway.csproj"
+COPY ["Directory.Packages.props", "./"]
+RUN dotnet restore "src/Gateway/Gateway.csproj"
 COPY . .
 WORKDIR "/src/src/Gateway"
-RUN dotnet build "./Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "Gateway.csproj" -c Release -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Gateway.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Gateway.csproj" -c Release -o /app/publish
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY ["src/Gateway/ocelot.json", "/app/ocelot.json"]
 
 ENV ASPNETCORE_URLS=http://+:7777
 
