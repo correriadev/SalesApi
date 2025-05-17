@@ -2,23 +2,55 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.WebApi", "src\SalesApi\SalesApi.WebApi\SalesApi.WebApi.csproj", "{A1B2C3D4-E5F6-4A5B-8C7D-9E0F1A2B3C4D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5EA7E7AC-1153-4C10-BF36-2589FA0A352D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.Domain", "src\SalesApi\SalesApi.Domain\SalesApi.Domain.csproj", "{B5A7E7AC-1153-4C10-BF36-2589FA0A352D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.Infrastructure", "src\SalesApi\SalesApi.Infrastructure\SalesApi.Infrastructure.csproj", "{C5A7E7AC-1153-4C10-BF36-2589FA0A352D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.WebApi", "src\SalesApi\SalesApi.WebApi\SalesApi.WebApi.csproj", "{D5A7E7AC-1153-4C10-BF36-2589FA0A352D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6EA7E7AC-1153-4C10-BF36-2589FA0A352D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.Tests", "tests\SalesApi.Tests\SalesApi.Tests.csproj", "{E5A7E7AC-1153-4C10-BF36-2589FA0A352D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.IntegrationTests", "tests\SalesApi.IntegrationTests\SalesApi.IntegrationTests.csproj", "{F5A7E7AC-1153-4C10-BF36-2589FA0A352D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A1B2C3D4-E5F6-4A5B-8C7D-9E0F1A2B3C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1B2C3D4-E5F6-4A5B-8C7D-9E0F1A2B3C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1B2C3D4-E5F6-4A5B-8C7D-9E0F1A2B3C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1B2C3D4-E5F6-4A5B-8C7D-9E0F1A2B3C4D}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F1E2D3C4-B5A6-4C7D-8E9F-0A1B2C3D4E5F}
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5A7E7AC-1153-4C10-BF36-2589FA0A352D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B5A7E7AC-1153-4C10-BF36-2589FA0A352D} = {5EA7E7AC-1153-4C10-BF36-2589FA0A352D}
+		{C5A7E7AC-1153-4C10-BF36-2589FA0A352D} = {5EA7E7AC-1153-4C10-BF36-2589FA0A352D}
+		{D5A7E7AC-1153-4C10-BF36-2589FA0A352D} = {5EA7E7AC-1153-4C10-BF36-2589FA0A352D}
+		{E5A7E7AC-1153-4C10-BF36-2589FA0A352D} = {6EA7E7AC-1153-4C10-BF36-2589FA0A352D}
+		{F5A7E7AC-1153-4C10-BF36-2589FA0A352D} = {6EA7E7AC-1153-4C10-BF36-2589FA0A352D}
 	EndGlobalSection
 EndGlobal 
