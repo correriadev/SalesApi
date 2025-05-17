@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>SalesApi.WebApi</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
@@ -13,6 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SalesApi.Infrastructure\SalesApi.Infrastructure.csproj" />
+    <ProjectReference Include="..\SalesApi.Infrastructure.Data.Sql\SalesApi.Infrastructure.Data.Sql.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="..\..\..\shared-settings\sharedSettings.json">

@@ -3,12 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using SalesApi.Infrastructure.Extensions;
+using SalesApi.Infrastructure.Data.Sql.Extensions;
 
 namespace SalesApi.WebApi;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,10 @@ public class Program
         // Add health checks
         builder.Services.AddHealthChecks(builder.Configuration);
 
+        // Add database
+        var connectionString = builder.Configuration.GetConnectionString("SalesApiDb");
+        builder.Services.AddDatabase(connectionString);
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -41,6 +46,9 @@ public class Program
         app.UseAuthorization();
         app.MapControllers();
         app.UseHealthChecks();
+
+        // Apply migrations
+        await app.Services.MigrateDatabaseAsync();
 
         app.Run();
     }
