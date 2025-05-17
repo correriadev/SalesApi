@@ -27,6 +27,8 @@ RUN dotnet publish "./SalesApi.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY ["shared-settings/sharedSettings.json", "/app/sharedSettings.json"]
+COPY ["shared-settings/sharedSettings.Local.json", "/app/sharedSettings.Local.json"]
 
 ENV ASPNETCORE_URLS=http://+:8090
 

@@ -8,5 +8,18 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SalesApi.Infrastructure\SalesApi.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="..\..\..\shared-settings\sharedSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="..\..\..\shared-settings\sharedSettings.Local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

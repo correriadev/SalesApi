@@ -1,0 +1,11 @@
+{
+  "ConnectionStrings": {
+    "SalesApiDb": "Host=db;Database=SalesApiDb;Username=postgres;Password=admin"
+  },
+  "HealthChecks": {
+    "Database": {
+      "Enabled": true,
+      "Timeout": 5
+    }
+  }
+} 
