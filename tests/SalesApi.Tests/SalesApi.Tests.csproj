@@ -21,11 +21,13 @@
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SalesApi\SalesApi.Domain\SalesApi.Domain.csproj" />
     <ProjectReference Include="..\..\src\SalesApi\SalesApi.Infrastructure\SalesApi.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\SalesApi\SalesApi.WebApi\SalesApi.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\SalesApi\SalesApi.Infrastructure.Data.Sql\SalesApi.Infrastructure.Data.Sql.csproj" />
   </ItemGroup>
 </Project> 

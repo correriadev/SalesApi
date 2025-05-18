@@ -5,14 +5,21 @@ namespace SalesApi.Domain.Entities;
 
 public class Product : Entity
 {
-    public Guid Id { get; private set; }
     public string Title { get; private set; }
     public Money Price { get; private set; }
     public string Description { get; private set; }
     public string Category { get; private set; }
     public string Image { get; private set; }
 
-    private Product() { } // For EF Core
+    private Product() 
+    { 
+        // Initialize non-nullable properties for EF Core
+        Title = string.Empty;
+        Price = Money.Zero;
+        Description = string.Empty;
+        Category = string.Empty;
+        Image = string.Empty;
+    } // For EF Core
 
     public Product(string title, Money price, string description, string category, string image)
     {
@@ -21,7 +28,6 @@ public class Product : Entity
         ValidateString(category, nameof(Category));
         ValidateString(image, nameof(Image));
 
-        Id = Guid.NewGuid();
         Title = title;
         Price = price;
         Description = description;

@@ -5,7 +5,6 @@ namespace SalesApi.Domain.Entities;
 
 public class SaleItem : Entity
 {
-    public Guid Id { get; private set; }
     public Guid ProductId { get; private set; }
     public int Quantity { get; private set; }
     public Money UnitPrice { get; private set; }
@@ -14,13 +13,18 @@ public class SaleItem : Entity
     public Guid SaleId { get; private set; }
     public Sale? Sale { get; private set; }
 
-    private SaleItem() { } // For EF Core
+    private SaleItem() 
+    { 
+        // Initialize non-nullable properties for EF Core
+        UnitPrice = Money.Zero;
+        Discount = Money.Zero;
+        Total = Money.Zero;
+    } // For EF Core
 
     public SaleItem(Guid productId, int quantity, Money unitPrice, Money discount)
     {
         ValidateQuantity(quantity, nameof(Quantity));
         
-        Id = Guid.NewGuid();
         ProductId = productId;
         Quantity = quantity;
         UnitPrice = unitPrice;

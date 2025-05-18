@@ -5,7 +5,6 @@ namespace SalesApi.Domain.Entities;
 
 public class Sale : Entity
 {
-    public Guid Id { get; private set; }
     public string SaleNumber { get; private set; }
     public DateTime Date { get; private set; }
     public Guid CustomerId { get; private set; }
@@ -14,13 +13,18 @@ public class Sale : Entity
     public bool Cancelled { get; private set; }
     public ICollection<SaleItem> Items { get; private set; }
 
-    private Sale() { } // For EF Core
+    private Sale() 
+    { 
+        // Initialize non-nullable properties for EF Core
+        SaleNumber = string.Empty;
+        TotalAmount = Money.Zero;
+        Items = new List<SaleItem>();
+    } // For EF Core
 
     public Sale(string saleNumber, Guid customerId, Guid branchId)
     {
         ValidateString(saleNumber, nameof(SaleNumber));
 
-        Id = Guid.NewGuid();
         SaleNumber = saleNumber;
         Date = DateTime.UtcNow;
         CustomerId = customerId;

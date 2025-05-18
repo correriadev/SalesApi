@@ -35,11 +35,17 @@ public sealed class Money
     public static Money operator *(Money money, decimal multiplier) => 
         FromDecimal(money._amount * multiplier);
 
-    public static bool operator ==(Money left, Money right) => 
-        left._amount == right._amount;
+    public static bool operator ==(Money? left, Money? right)
+    {
+        if (ReferenceEquals(left, right))
+            return true;
+        if (left is null || right is null)
+            return false;
+        return left._amount == right._amount;
+    }
 
-    public static bool operator !=(Money left, Money right) => 
-        left._amount != right._amount;
+    public static bool operator !=(Money? left, Money? right) => 
+        !(left == right);
 
     public override bool Equals(object? obj)
     {

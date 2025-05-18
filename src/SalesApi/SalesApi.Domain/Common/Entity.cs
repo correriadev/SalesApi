@@ -2,6 +2,8 @@ namespace SalesApi.Domain.Common;
 
 public abstract class Entity
 {
+    public Guid Id { get; protected set; }
+
     protected static void ValidateString(string value, string propertyName)
     {
         if (string.IsNullOrWhiteSpace(value))
