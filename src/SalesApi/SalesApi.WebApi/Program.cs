@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using SalesApi.Infrastructure.Extensions;
 using SalesApi.Infrastructure.Data.Sql.Extensions;
+using SalesApi.WebApi.Swagger;
 
 namespace SalesApi.WebApi;
 
@@ -14,8 +15,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add shared settings
+        var basePath = Path.GetDirectoryName(typeof(Program).Assembly.Location)!;
         builder.Configuration
-            .SetBasePath(builder.Environment.ContentRootPath)
+            .SetBasePath(basePath)
             .AddJsonFile("sharedSettings.json", optional: false, reloadOnChange: true)
             .AddJsonFile($"sharedSettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
@@ -23,22 +25,22 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerDocumentation();
 
         // Add health checks
         builder.Services.AddHealthChecks(builder.Configuration);
 
         // Add database
-        var connectionString = builder.Configuration.GetConnectionString("SalesApiDb");
-        builder.Services.AddDatabase(connectionString);
+        builder.Services.AddDatabase(builder.Configuration);
 
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
+        app.UseSwaggerDocumentation();
+
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseDeveloperExceptionPage();
         }
 
         app.UseHttpsRedirection();

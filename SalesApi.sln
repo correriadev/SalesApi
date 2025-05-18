@@ -6,27 +6,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5EA7E7AF-715
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.Domain", "src\SalesApi\SalesApi.Domain\SalesApi.Domain.csproj", "{1EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesApi.Domain", "src\SalesApi\SalesApi.Domain\SalesApi.Domain.csproj", "{1EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.Infrastructure", "src\SalesApi\SalesApi.Infrastructure\SalesApi.Infrastructure.csproj", "{2EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesApi.Infrastructure", "src\SalesApi\SalesApi.Infrastructure\SalesApi.Infrastructure.csproj", "{2EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.WebApi", "src\SalesApi\SalesApi.WebApi\SalesApi.WebApi.csproj", "{3EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesApi.WebApi", "src\SalesApi\SalesApi.WebApi\SalesApi.WebApi.csproj", "{3EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.Tests", "tests\SalesApi.Tests\SalesApi.Tests.csproj", "{4EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesApi.Tests", "tests\SalesApi.Tests\SalesApi.Tests.csproj", "{4EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.IntegrationTests", "tests\SalesApi.IntegrationTests\SalesApi.IntegrationTests.csproj", "{5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesApi.IntegrationTests", "tests\SalesApi.IntegrationTests\SalesApi.IntegrationTests.csproj", "{5FA132B0-C144-4C33-83AD-6B0140823F45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesApi.Infrastructure.Data.Sql", "src\SalesApi\SalesApi.Infrastructure.Data.Sql\SalesApi.Infrastructure.Data.Sql.csproj", "{7EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesApi.Infrastructure.Data.Sql", "src\SalesApi\SalesApi.Infrastructure.Data.Sql\SalesApi.Infrastructure.Data.Sql.csproj", "{7EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,21 +44,24 @@ Global
 		{4EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FA132B0-C144-4C33-83AD-6B0140823F45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FA132B0-C144-4C33-83AD-6B0140823F45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FA132B0-C144-4C33-83AD-6B0140823F45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FA132B0-C144-4C33-83AD-6B0140823F45}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D} = {5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}
 		{2EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D} = {5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}
 		{3EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D} = {5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}
 		{4EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D} = {6EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}
-		{5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D} = {6EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}
+		{5FA132B0-C144-4C33-83AD-6B0140823F45} = {6EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}
 		{7EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D} = {5EA7E7AF-7156-4B7D-9A4D-8B8D9D9D9D9D}
 	EndGlobalSection
-EndGlobal 
+EndGlobal

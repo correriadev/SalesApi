@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "SalesApiDb": "Host=postgres;Port=5432;Database=salesapi-db-sql;Username=postgres;Password=postgres",
+    "SalesApiDb": "Host=localhost;Port=5432;Database=salesapi-db-sql;Username=postgres;Password=postgres",
     "MongoDb": "mongodb://localhost:27017"
   },
   "HealthChecks": {

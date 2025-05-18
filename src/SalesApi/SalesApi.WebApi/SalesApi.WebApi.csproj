@@ -17,11 +17,13 @@
     <ProjectReference Include="..\SalesApi.Infrastructure.Data.Sql\SalesApi.Infrastructure.Data.Sql.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="..\..\..\shared-settings\sharedSettings.json">
+    <Content Include="..\..\..\shared-settings\sharedSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="..\..\..\shared-settings\sharedSettings.Local.json">
+      <Link>sharedSettings.json</Link>
+    </Content>
+    <Content Include="..\..\..\shared-settings\sharedSettings.Local.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+      <Link>sharedSettings.Local.json</Link>
+    </Content>
   </ItemGroup>
 </Project>
