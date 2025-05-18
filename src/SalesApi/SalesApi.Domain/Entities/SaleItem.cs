@@ -1,57 +1,58 @@
 using SalesApi.Domain.Common;
+using SalesApi.Domain.ValueObjects;
 
 namespace SalesApi.Domain.Entities;
 
 public class SaleItem : Entity
 {
-    private decimal _unitPrice;
-    private decimal _discount;
-    private decimal _total;
-    private int _quantity;
+    public Guid Id { get; private set; }
+    public Guid ProductId { get; private set; }
+    public int Quantity { get; private set; }
+    public Money UnitPrice { get; private set; }
+    public Money Discount { get; private set; }
+    public Money Total { get; private set; }
+    public Guid SaleId { get; private set; }
+    public Sale? Sale { get; private set; }
 
-    public Guid Id { get; set; }
-    public Guid ProductId { get; set; }
+    private SaleItem() { } // For EF Core
 
-    public int Quantity
+    public SaleItem(Guid productId, int quantity, Money unitPrice, Money discount)
     {
-        get => _quantity;
-        set
-        {
-            ValidateQuantity(value, nameof(Quantity));
-            _quantity = value;
-        }
+        ValidateQuantity(quantity, nameof(Quantity));
+        
+        Id = Guid.NewGuid();
+        ProductId = productId;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+        Discount = discount;
+        Total = CalculateTotal();
     }
 
-    public decimal UnitPrice
+    private Money CalculateTotal() => 
+        (UnitPrice * Quantity) - Discount;
+
+    public void UpdateQuantity(int quantity)
     {
-        get => _unitPrice;
-        set
-        {
-            ValidateMonetaryValue(value, nameof(UnitPrice));
-            _unitPrice = value;
-        }
+        ValidateQuantity(quantity, nameof(Quantity));
+        Quantity = quantity;
+        Total = CalculateTotal();
     }
 
-    public decimal Discount
+    public void UpdateUnitPrice(Money unitPrice)
     {
-        get => _discount;
-        set
-        {
-            ValidateMonetaryValue(value, nameof(Discount));
-            _discount = value;
-        }
+        UnitPrice = unitPrice;
+        Total = CalculateTotal();
     }
 
-    public decimal Total
+    public void UpdateDiscount(Money discount)
     {
-        get => _total;
-        set
-        {
-            ValidateMonetaryValue(value, nameof(Total));
-            _total = value;
-        }
+        Discount = discount;
+        Total = CalculateTotal();
     }
 
-    public Guid SaleId { get; set; }
-    public Sale? Sale { get; set; }
+    public void SetSale(Sale sale)
+    {
+        Sale = sale;
+        SaleId = sale.Id;
+    }
 } 

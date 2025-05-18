@@ -1,64 +1,60 @@
 using SalesApi.Domain.Common;
+using SalesApi.Domain.ValueObjects;
 
 namespace SalesApi.Domain.Entities;
 
 public class Product : Entity
 {
-    private string _title = string.Empty;
-    private string _description = string.Empty;
-    private string _category = string.Empty;
-    private string _image = string.Empty;
-    private decimal _price;
+    public Guid Id { get; private set; }
+    public string Title { get; private set; }
+    public Money Price { get; private set; }
+    public string Description { get; private set; }
+    public string Category { get; private set; }
+    public string Image { get; private set; }
 
-    public Guid Id { get; set; }
+    private Product() { } // For EF Core
 
-    public string Title
+    public Product(string title, Money price, string description, string category, string image)
     {
-        get => _title;
-        set
-        {
-            ValidateString(value, nameof(Title));
-            _title = value;
-        }
+        ValidateString(title, nameof(Title));
+        ValidateString(description, nameof(Description));
+        ValidateString(category, nameof(Category));
+        ValidateString(image, nameof(Image));
+
+        Id = Guid.NewGuid();
+        Title = title;
+        Price = price;
+        Description = description;
+        Category = category;
+        Image = image;
     }
 
-    public decimal Price
+    public void UpdateTitle(string title)
     {
-        get => _price;
-        set
-        {
-            ValidateMonetaryValue(value, nameof(Price));
-            _price = value;
-        }
+        ValidateString(title, nameof(Title));
+        Title = title;
     }
 
-    public string Description
+    public void UpdatePrice(Money price)
     {
-        get => _description;
-        set
-        {
-            ValidateString(value, nameof(Description));
-            _description = value;
-        }
+        Price = price;
     }
 
-    public string Category
+    public void UpdateDescription(string description)
     {
-        get => _category;
-        set
-        {
-            ValidateString(value, nameof(Category));
-            _category = value;
-        }
+        ValidateString(description, nameof(Description));
+        Description = description;
     }
 
-    public string Image
+    public void UpdateCategory(string category)
     {
-        get => _image;
-        set
-        {
-            ValidateString(value, nameof(Image));
-            _image = value;
-        }
+        ValidateString(category, nameof(Category));
+        Category = category;
+    }
+
+    public void UpdateImage(string image)
+    {
+        ValidateString(image, nameof(Image));
+        Image = image;
     }
 } 

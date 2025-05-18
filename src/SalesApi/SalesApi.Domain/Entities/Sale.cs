@@ -1,38 +1,58 @@
 using SalesApi.Domain.Common;
+using SalesApi.Domain.ValueObjects;
 
 namespace SalesApi.Domain.Entities;
 
 public class Sale : Entity
 {
-    private string _saleNumber = string.Empty;
-    private decimal _totalAmount;
+    public Guid Id { get; private set; }
+    public string SaleNumber { get; private set; }
+    public DateTime Date { get; private set; }
+    public Guid CustomerId { get; private set; }
+    public Guid BranchId { get; private set; }
+    public Money TotalAmount { get; private set; }
+    public bool Cancelled { get; private set; }
+    public ICollection<SaleItem> Items { get; private set; }
 
-    public Guid Id { get; set; }
+    private Sale() { } // For EF Core
 
-    public string SaleNumber
+    public Sale(string saleNumber, Guid customerId, Guid branchId)
     {
-        get => _saleNumber;
-        set
-        {
-            ValidateString(value, nameof(SaleNumber));
-            _saleNumber = value;
-        }
+        ValidateString(saleNumber, nameof(SaleNumber));
+
+        Id = Guid.NewGuid();
+        SaleNumber = saleNumber;
+        Date = DateTime.UtcNow;
+        CustomerId = customerId;
+        BranchId = branchId;
+        TotalAmount = Money.Zero;
+        Cancelled = false;
+        Items = new List<SaleItem>();
     }
 
-    public DateTime Date { get; set; }
-    public Guid CustomerId { get; set; }
-    public Guid BranchId { get; set; }
-
-    public decimal TotalAmount
+    public void AddItem(SaleItem item)
     {
-        get => _totalAmount;
-        set
-        {
-            ValidateMonetaryValue(value, nameof(TotalAmount));
-            _totalAmount = value;
-        }
+        Items.Add(item);
+        item.SetSale(this);
+        RecalculateTotal();
     }
 
-    public bool Cancelled { get; set; }
-    public ICollection<SaleItem> Items { get; set; } = new List<SaleItem>();
+    public void RemoveItem(SaleItem item)
+    {
+        Items.Remove(item);
+        RecalculateTotal();
+    }
+
+    public void Cancel()
+    {
+        if (Cancelled)
+            throw new InvalidOperationException("Sale is already cancelled");
+
+        Cancelled = true;
+    }
+
+    private void RecalculateTotal()
+    {
+        TotalAmount = Items.Aggregate(Money.Zero, (total, item) => total + item.Total);
+    }
 } 

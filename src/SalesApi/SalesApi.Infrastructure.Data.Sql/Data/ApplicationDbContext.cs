@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SalesApi.Domain.Entities;
+using SalesApi.Infrastructure.Data.Sql.Configurations;
 
 namespace SalesApi.Infrastructure.Data.Sql;
 
@@ -18,5 +19,7 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.ConfigureMoney();
     }
 } 
