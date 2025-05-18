@@ -25,10 +25,14 @@ public class SaleTests
     [InlineData("")]
     [InlineData(null)]
     [InlineData("   ")]
-    public void Sale_WithInvalidSaleNumber_ShouldThrowArgumentException(string invalidSaleNumber)
+    public void Sale_WithInvalidSaleNumber_ShouldThrowArgumentException(string? invalidSaleNumber)
     {
         // Act & Assert
-        var action = () => new Sale(invalidSaleNumber, Guid.NewGuid(), Guid.NewGuid());
+        var action = () => new Sale(
+            invalidSaleNumber!,
+            Guid.NewGuid(),
+            Guid.NewGuid()
+        );
         action.Should().Throw<ArgumentException>()
             .WithMessage("*SaleNumber cannot be null or empty*");
     }

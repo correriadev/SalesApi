@@ -31,11 +31,11 @@ public class ProductTests
     [InlineData("")]
     [InlineData(null)]
     [InlineData("   ")]
-    public void Product_WithInvalidTitle_ShouldThrowArgumentException(string invalidTitle)
+    public void Product_WithInvalidTitle_ShouldThrowArgumentException(string? invalidTitle)
     {
         // Act & Assert
         var action = () => new Product(
-            invalidTitle,
+            invalidTitle!,
             Money.FromDecimal(99.99m),
             "Test Description",
             "Test Category",
@@ -49,13 +49,13 @@ public class ProductTests
     [InlineData("")]
     [InlineData(null)]
     [InlineData("   ")]
-    public void Product_WithInvalidDescription_ShouldThrowArgumentException(string invalidDescription)
+    public void Product_WithInvalidDescription_ShouldThrowArgumentException(string? invalidDescription)
     {
         // Act & Assert
         var action = () => new Product(
             "Test Product",
             Money.FromDecimal(99.99m),
-            invalidDescription,
+            invalidDescription!,
             "Test Category",
             "test.jpg"
         );
@@ -67,14 +67,14 @@ public class ProductTests
     [InlineData("")]
     [InlineData(null)]
     [InlineData("   ")]
-    public void Product_WithInvalidCategory_ShouldThrowArgumentException(string invalidCategory)
+    public void Product_WithInvalidCategory_ShouldThrowArgumentException(string? invalidCategory)
     {
         // Act & Assert
         var action = () => new Product(
             "Test Product",
             Money.FromDecimal(99.99m),
             "Test Description",
-            invalidCategory,
+            invalidCategory!,
             "test.jpg"
         );
         action.Should().Throw<ArgumentException>()
@@ -85,7 +85,7 @@ public class ProductTests
     [InlineData("")]
     [InlineData(null)]
     [InlineData("   ")]
-    public void Product_WithInvalidImage_ShouldThrowArgumentException(string invalidImage)
+    public void Product_WithInvalidImage_ShouldThrowArgumentException(string? invalidImage)
     {
         // Act & Assert
         var action = () => new Product(
@@ -93,7 +93,7 @@ public class ProductTests
             Money.FromDecimal(99.99m),
             "Test Description",
             "Test Category",
-            invalidImage
+            invalidImage!
         );
         action.Should().Throw<ArgumentException>()
             .WithMessage("*Image cannot be null or empty*");
