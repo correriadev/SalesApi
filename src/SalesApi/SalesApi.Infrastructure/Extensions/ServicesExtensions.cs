@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using HealthChecks.NpgSql;
-using HealthChecks.MongoDb;
-using System.Text.Json;
+using RabbitMQ.Client;
 using System.Text;
+using System.Text.Json;
 
 namespace SalesApi.Infrastructure.Extensions;
 
@@ -14,6 +13,14 @@ public static class ServicesExtensions
 {
     public static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
     {
+        // Register RabbitMQ connection
+        services.AddSingleton<IConnection>(sp =>
+        {
+            var uri = new Uri(configuration.GetConnectionString("RabbitMq")!);
+            var factory = new ConnectionFactory { Uri = uri };
+            return factory.CreateConnectionAsync().Result;
+        });
+
         services.AddHealthChecks()
             .AddNpgSql(
                 configuration.GetConnectionString("SalesApiDb")!,
@@ -26,6 +33,13 @@ public static class ServicesExtensions
                 name: "mongodb",
                 tags: new[] { "database", "mongodb" },
                 timeout: TimeSpan.FromSeconds(configuration.GetValue<int>("HealthChecks:MongoDb:Timeout"))
+            )
+            .AddRabbitMQ(
+                factory: sp => sp.GetRequiredService<IConnection>(),
+                name: "rabbitmq",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "message-bus", "rabbitmq" },
+                timeout: TimeSpan.FromSeconds(configuration.GetValue<int>("HealthChecks:RabbitMq:Timeout"))
             );
 
         return services;

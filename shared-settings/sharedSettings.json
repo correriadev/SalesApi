@@ -1,7 +1,11 @@
 {
   "ConnectionStrings": {
     "SalesApiDb": "Host=postgres;Port=5432;Database=salesapi-db-sql;Username=postgres;Password=postgres",
-    "MongoDb": "mongodb://mongodb:27017"
+    "MongoDb": "mongodb://mongodb:27017",
+    "RabbitMQ": "amqp://guest:guest@rabbitmq:5672"
+  },
+  "MessageBus": {
+    "QueueName": "sales-api"
   },
   "HealthChecks": {
     "Database": {
@@ -9,6 +13,10 @@
       "Timeout": 5
     },
     "MongoDb": {
+      "Enabled": true,
+      "Timeout": 5
+    },
+    "RabbitMQ": {
       "Enabled": true,
       "Timeout": 5
     }

@@ -9,8 +9,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
-    <PackageReference Include="Npgsql" />
-    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SalesApi.Infrastructure\SalesApi.Infrastructure.csproj" />
