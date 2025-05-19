@@ -1,50 +1,67 @@
-using FluentAssertions;
-using Xunit;
-using NSubstitute;
-using SalesApi.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using NSubstitute;
+using SalesApi.WebApi.Controllers.V1;
+using SalesApi.ViewModel.V1.Sales;
+using Xunit;
+using Microsoft.Extensions.Logging;
 
 namespace SalesApi.Tests.WebApi;
 
 public class SalesControllerTests
 {
     private readonly SalesController _controller;
+    private readonly ILogger<SalesController> _logger;
 
     public SalesControllerTests()
     {
-        _controller = new SalesController();
+        _logger = Substitute.For<ILogger<SalesController>>();
+        _controller = new SalesController(_logger);
     }
 
     [Fact]
-    public void Get_ShouldReturnOkResult()
-    {
-        // Act
-        var result = _controller.Get();
-
-        // Assert
-        result.Should().BeOfType<OkResult>();
-    }
-
-    [Fact]
-    public void Post_ShouldReturnOkResult()
-    {
-        // Act
-        var result = _controller.Post();
-
-        // Assert
-        result.Should().BeOfType<OkResult>();
-    }
-
-    [Fact]
-    public void Delete_ShouldReturnOkResult()
+    public async Task Create_WithValidRequest_ReturnsOk()
     {
         // Arrange
-        var id = "test-id";
+        var request = new SaleViewModel.Request
+        {
+            ProductId = Guid.NewGuid(),
+            Quantity = 1,
+            CustomerId = Guid.NewGuid()
+        };
 
         // Act
-        var result = _controller.Delete(id);
+        var result = await _controller.Create(request);
 
         // Assert
-        result.Should().BeOfType<OkResult>();
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var response = Assert.IsType<SaleViewModel.CreateResponse>(okResult.Value);
+        Assert.NotNull(response);
+    }
+
+    [Fact]
+    public async Task GetAll_ReturnsOkWithEmptyList()
+    {
+        // Act
+        var result = await _controller.GetAll();
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var response = Assert.IsType<SaleViewModel.ListResponse>(okResult.Value);
+        Assert.NotNull(response);
+    }
+
+    [Fact]
+    public async Task Cancel_WithValidId_ReturnsOk()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+
+        // Act
+        var result = await _controller.Cancel(id);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var response = Assert.IsType<SaleViewModel.CancelResponse>(okResult.Value);
+        Assert.NotNull(response);
     }
 } 

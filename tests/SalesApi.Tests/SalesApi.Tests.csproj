@@ -22,6 +22,7 @@
     <PackageReference Include="Bogus" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,5 +30,6 @@
     <ProjectReference Include="..\..\src\SalesApi\SalesApi.Infrastructure\SalesApi.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\SalesApi\SalesApi.WebApi\SalesApi.WebApi.csproj" />
     <ProjectReference Include="..\..\src\SalesApi\SalesApi.Infrastructure.Data.Sql\SalesApi.Infrastructure.Data.Sql.csproj" />
+    <ProjectReference Include="..\..\src\SalesApi\SalesApi.ViewModel\SalesApi.ViewModel.csproj" />
   </ItemGroup>
 </Project> 

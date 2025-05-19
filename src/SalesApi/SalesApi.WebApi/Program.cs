@@ -5,6 +5,9 @@ using Microsoft.Extensions.Configuration;
 using SalesApi.Infrastructure.Extensions;
 using SalesApi.Infrastructure.Data.Sql.Extensions;
 using SalesApi.WebApi.Swagger;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace SalesApi.WebApi;
 
@@ -24,7 +27,27 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
+
+        // Configure API versioning
+        builder.Services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = ApiVersionReader.Combine(
+                new UrlSegmentApiVersionReader(),
+                new HeaderApiVersionReader("x-api-version"),
+                new MediaTypeApiVersionReader("x-api-version")
+            );
+        });
+
+        builder.Services.AddVersionedApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
+        });
+
+        // Add Swagger documentation
         builder.Services.AddSwaggerDocumentation();
 
         // Add health checks
@@ -36,8 +59,6 @@ public class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        app.UseSwaggerDocumentation();
-
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -46,6 +67,10 @@ public class Program
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthorization();
+
+        // Use Swagger documentation
+        app.UseSwaggerDocumentation();
+
         app.MapControllers();
         app.UseHealthChecks();
 
