@@ -68,7 +68,9 @@ public class Program
 
         // Add Application services (MediatR and AutoMapper)
         builder.Services.AddApplication();
- 
+
+        builder.Services.AddInfrastructureDataSql(builder.Configuration);   
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

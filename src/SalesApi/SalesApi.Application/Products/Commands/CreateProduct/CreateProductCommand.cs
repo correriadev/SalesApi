@@ -20,5 +20,7 @@ public record CreateProductCommand : IRequest<ProductViewModel.Response>, IMapFr
         profile.CreateMap<ProductViewModel.Request, CreateProductCommand>();
         profile.CreateMap<CreateProductCommand, Product>()
             .ForMember(d => d.Price, opt => opt.MapFrom(s => Money.FromDecimal(s.Price)));
+        profile.CreateMap<Product, ProductViewModel.Response>()
+            .ForMember(d => d.Price, opt => opt.MapFrom(s => s.Price.ToDecimal()));
     }
 } 

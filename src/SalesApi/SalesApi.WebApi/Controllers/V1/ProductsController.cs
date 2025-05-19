@@ -36,7 +36,9 @@ public class ProductsController : ControllerBase
         {
             Title = request.Title,
             Description = request.Description,
-            Price = request.Price
+            Price = request.Price,
+            Category = request.Category,
+            Image = request.Image,
         };
 
         var result = await _mediator.Send(command);
