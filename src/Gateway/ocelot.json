@@ -9,8 +9,20 @@
           "Port": 8090
         }
       ],
-      "UpstreamPathTemplate": "/health",
-      "UpstreamHttpMethod": [ "GET" ]
+      "UpstreamPathTemplate": "/api/health",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/health",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "sales-api-worker",
+          "Port": 8091
+        }
+      ],
+      "UpstreamPathTemplate": "/api/worker/health",
+      "UpstreamHttpMethod": [ "Get" ]
     }
   ],
   "GlobalConfiguration": {

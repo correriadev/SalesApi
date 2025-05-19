@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-SalesApi.Worker-e054ad0f-5c11-42e1-8679-875e53c7388c</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SalesApi.Domain\SalesApi.Domain.csproj" />
+    <ProjectReference Include="..\SalesApi.Infrastructure\SalesApi.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\..\shared-settings\sharedSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>sharedSettings.json</Link>
+    </Content>
+    <Content Include="..\..\..\shared-settings\sharedSettings.Local.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>sharedSettings.Local.json</Link>
+    </Content>
+  </ItemGroup>
+</Project>
