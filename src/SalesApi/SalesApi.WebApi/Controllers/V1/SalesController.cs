@@ -30,7 +30,7 @@ public class SalesController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(SaleViewModel.Response), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<SaleViewModel.Response>> Create([FromBody] SaleViewModel.Request request)
+    public async Task<CreatedAtActionResult> Create([FromBody] SaleViewModel.Request request)
     {
         var command = new CreateSaleCommand
         {
@@ -50,7 +50,7 @@ public class SalesController : ControllerBase
     /// <response code="200">Returns the list of sales</response>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<SaleViewModel.Response>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<SaleViewModel.Response>>> GetAll()
+    public async Task<OkObjectResult> GetAll()
     {
         var query = new GetAllSalesQuery();
         var result = await _mediator.Send(query);
