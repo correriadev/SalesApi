@@ -1,3 +1,5 @@
+using AutoMapper;
+
 namespace SalesApi.Application.Common.Mappings;
 
 public interface IMapFrom<T>

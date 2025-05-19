@@ -8,6 +8,12 @@ using SalesApi.WebApi.Swagger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.OpenApi.Models;
+using SalesApi.Application;
+using SalesApi.Infrastructure;
+using SalesApi.Infrastructure.Data.Sql;
+using SalesApi.WebApi.Controllers.V1;
+using System.Text.Json.Serialization;
 
 namespace SalesApi.WebApi;
 
@@ -26,7 +32,11 @@ public class Program
             .AddEnvironmentVariables();
 
         // Add services to the container.
-        builder.Services.AddControllers();
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
         // Configure API versioning
         builder.Services.AddApiVersioning(options =>
@@ -56,12 +66,16 @@ public class Program
         // Add database
         builder.Services.AddDatabase(builder.Configuration);
 
+        // Add Application services (MediatR and AutoMapper)
+        builder.Services.AddApplication();
+ 
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+            app.UseSwaggerDocumentation();
         }
 
         app.UseHttpsRedirection();

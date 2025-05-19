@@ -1,5 +1,7 @@
 using AutoMapper;
 using MediatR;
+using SalesApi.Application.Common.Mappings;
+using SalesApi.Domain.Entities;
 using SalesApi.ViewModel.V1.Products;
 
 namespace SalesApi.Application.Products.Queries.GetAllProducts;

@@ -1,53 +1,94 @@
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
+using SalesApi.Application.Sales.Commands.CreateSale;
+using SalesApi.Application.Sales.Queries.GetAllSales;
 using SalesApi.WebApi.Controllers.V1;
 using SalesApi.ViewModel.V1.Sales;
 using Xunit;
-using Microsoft.Extensions.Logging;
+using MediatR;
 
 namespace SalesApi.Tests.WebApi;
 
 public class SalesControllerTests
 {
+    private readonly IMediator _mediator;
     private readonly SalesController _controller;
-    private readonly ILogger<SalesController> _logger;
 
     public SalesControllerTests()
     {
-        _logger = Substitute.For<ILogger<SalesController>>();
-        _controller = new SalesController(_logger);
+        _mediator = Substitute.For<IMediator>();
+        _controller = new SalesController(_mediator);
     }
 
     [Fact]
-    public async Task Create_WithValidRequest_ReturnsOk()
+    public async Task Create_WithValidRequest_ShouldReturnCreatedResult()
     {
         // Arrange
         var request = new SaleViewModel.Request
         {
-            ProductId = Guid.NewGuid(),
-            Quantity = 1,
-            CustomerId = Guid.NewGuid()
+            CustomerName = "Test Customer",
+            CustomerEmail = "test@example.com",
+            Items = new List<SaleItemViewModel>
+            {
+                new()
+                {
+                    ProductId = Guid.NewGuid(),
+                    Quantity = 2,
+                    UnitPrice = 10.99m,
+                    Discount = 0
+                }
+            }
         };
+
+        var response = new SaleViewModel.Response
+        {
+            Id = Guid.NewGuid(),
+            CustomerName = request.CustomerName,
+            CustomerEmail = request.CustomerEmail,
+            TotalAmount = 21.98m,
+            Status = "Pending",
+            CreatedAt = DateTime.UtcNow,
+            Items = request.Items
+        };
+
+        _mediator.Send(Arg.Any<CreateSaleCommand>(), Arg.Any<CancellationToken>())
+            .Returns(response);
 
         // Act
         var result = await _controller.Create(request);
 
         // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var response = Assert.IsType<SaleViewModel.CreateResponse>(okResult.Value);
-        Assert.NotNull(response);
+        var createdResult = Assert.IsType<CreatedAtActionResult>(result);
+        Assert.Equal(response, createdResult.Value);
     }
 
     [Fact]
-    public async Task GetAll_ReturnsOkWithEmptyList()
+    public async Task GetAll_ShouldReturnOkResult()
     {
+        // Arrange
+        var sales = new List<SaleViewModel.Response>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                CustomerName = "Test Customer",
+                CustomerEmail = "test@example.com",
+                TotalAmount = 21.98m,
+                Status = "Pending",
+                CreatedAt = DateTime.UtcNow,
+                Items = new List<SaleItemViewModel>()
+            }
+        };
+
+        _mediator.Send(Arg.Any<GetAllSalesQuery>(), Arg.Any<CancellationToken>())
+            .Returns(sales);
+
         // Act
         var result = await _controller.GetAll();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var response = Assert.IsType<SaleViewModel.ListResponse>(okResult.Value);
-        Assert.NotNull(response);
+        Assert.Equal(sales, okResult.Value);
     }
 
     [Fact]

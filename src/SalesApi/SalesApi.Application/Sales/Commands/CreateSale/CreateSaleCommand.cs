@@ -2,7 +2,9 @@ using AutoMapper;
 using MediatR;
 using SalesApi.Application.Common.Mappings;
 using SalesApi.Domain.Entities;
+using SalesApi.Domain.ValueObjects;
 using SalesApi.ViewModel.V1.Sales;
+using System.Linq;
 
 namespace SalesApi.Application.Sales.Commands.CreateSale;
 
@@ -16,11 +18,11 @@ public record CreateSaleCommand : IRequest<SaleViewModel.Response>, IMapFrom<Sal
     {
         profile.CreateMap<SaleViewModel.Request, CreateSaleCommand>();
         profile.CreateMap<CreateSaleCommand, Sale>()
-            .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items.Select(i => new SaleItem
-            {
-                ProductId = i.ProductId,
-                Quantity = i.Quantity,
-                UnitPrice = i.UnitPrice
-            })));
+            .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items.Select(i => new SaleItem(
+                i.ProductId,
+                i.Quantity,
+                Money.FromDecimal(i.UnitPrice),
+                Money.FromDecimal(i.Discount)
+            ))));
     }
 } 

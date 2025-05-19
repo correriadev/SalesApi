@@ -6,36 +6,39 @@ namespace SalesApi.ViewModel.V1.Sales;
 public static class SaleViewModel
 {
     [JsonSchemaName("SaleCreateRequest")]
-    public class Request
+    public record Request
     {
-        public Guid ProductId { get; set; }
-        public int Quantity { get; set; }
-        public Guid CustomerId { get; set; }
+        public string CustomerName { get; init; } = string.Empty;
+        public string CustomerEmail { get; init; } = string.Empty;
+        public List<SaleItemViewModel> Items { get; init; } = new();
     }
 
     [JsonSchemaName("SaleResponse")]
-    public class Response
+    public record Response
     {
-        public Guid Id { get; set; }
-        public Guid ProductId { get; set; }
-        public string ProductName { get; set; } = string.Empty;
-        public int Quantity { get; set; }
-        public decimal TotalPrice { get; set; }
-        public Guid CustomerId { get; set; }
-        public string CustomerName { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
-        public string Status { get; set; } = string.Empty;
+        public Guid Id { get; init; }
+        public string CustomerName { get; init; } = string.Empty;
+        public string CustomerEmail { get; init; } = string.Empty;
+        public decimal TotalAmount { get; init; }
+        public string Status { get; init; } = string.Empty;
+        public DateTime CreatedAt { get; init; }
+        public List<SaleItemViewModel> Items { get; init; } = new();
     }
 
     [JsonSchemaName("SaleCreateResponse")]
-    public class CreateResponse : Response
+    public record CreateResponse : Response
     {
     }
 
     [JsonSchemaName("SaleListResponse")]
-    public class ListResponse
+    public record ListResponse
     {
-        public List<Response> Sales { get; set; } = new();
+        public Guid Id { get; init; }
+        public string CustomerName { get; init; } = string.Empty;
+        public string CustomerEmail { get; init; } = string.Empty;
+        public decimal TotalAmount { get; init; }
+        public string Status { get; init; } = string.Empty;
+        public DateTime CreatedAt { get; init; }
     }
 
     [JsonSchemaName("SaleCancelResponse")]
@@ -45,4 +48,12 @@ public static class SaleViewModel
         public string Status { get; set; } = "Cancelled";
         public DateTime CancelledAt { get; set; }
     }
+}
+
+public record SaleItemViewModel
+{
+    public Guid ProductId { get; init; }
+    public int Quantity { get; init; }
+    public decimal UnitPrice { get; init; }
+    public decimal Discount { get; set; }
 } 

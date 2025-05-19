@@ -7,14 +7,18 @@
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SalesApi.Infrastructure\SalesApi.Infrastructure.csproj" />
     <ProjectReference Include="..\SalesApi.Infrastructure.Data.Sql\SalesApi.Infrastructure.Data.Sql.csproj" />
     <ProjectReference Include="..\SalesApi.ViewModel\SalesApi.ViewModel.csproj" />
+    <ProjectReference Include="..\SalesApi.Application\SalesApi.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\shared-settings\sharedSettings.json">

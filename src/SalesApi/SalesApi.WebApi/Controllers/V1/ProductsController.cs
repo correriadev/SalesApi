@@ -1,6 +1,9 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SalesApi.ViewModel.V1.Products;
+using SalesApi.Application.Products.Commands.CreateProduct;
+using SalesApi.Application.Products.Queries.GetAllProducts;
 using SalesApi.ViewModel.V1.Common;
+using SalesApi.ViewModel.V1.Products;
 
 namespace SalesApi.WebApi.Controllers.V1;
 
@@ -10,11 +13,11 @@ namespace SalesApi.WebApi.Controllers.V1;
 [Produces("application/json")]
 public class ProductsController : ControllerBase
 {
-    private readonly ILogger<ProductsController> _logger;
+    private readonly IMediator _mediator;
 
-    public ProductsController(ILogger<ProductsController> logger)
+    public ProductsController(IMediator mediator)
     {
-        _logger = logger;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -22,15 +25,22 @@ public class ProductsController : ControllerBase
     /// </summary>
     /// <param name="request">Product creation request</param>
     /// <returns>Created product</returns>
-    /// <response code="202">Product creation request accepted</response>
-    /// <response code="400">Invalid request data</response>
+    /// <response code="201">Returns the newly created product</response>
+    /// <response code="400">If the request is invalid</response>
     [HttpPost]
-    [ProducesResponseType(typeof(ProductViewModel.Response), StatusCodes.Status202Accepted)]
+    [ProducesResponseType(typeof(ProductViewModel.Response), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody] ProductViewModel.Request request)
+    public async Task<ActionResult<ProductViewModel.Response>> Create([FromBody] ProductViewModel.Request request)
     {
-        // TODO: Implement product creation logic
-        return Accepted();
+        var command = new CreateProductCommand
+        {
+            Title = request.Title,
+            Description = request.Description,
+            Price = request.Price
+        };
+
+        var result = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetAll), result);
     }
 
     /// <summary>
@@ -39,10 +49,11 @@ public class ProductsController : ControllerBase
     /// <returns>List of products</returns>
     /// <response code="200">Returns the list of products</response>
     [HttpGet]
-    [ProducesResponseType(typeof(ProductViewModel.ListResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<ProductViewModel.Response>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<ProductViewModel.Response>>> GetAll()
     {
-        // TODO: Implement get all products logic
-        return Ok(new ProductViewModel.ListResponse());
+        var query = new GetAllProductsQuery();
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 } 

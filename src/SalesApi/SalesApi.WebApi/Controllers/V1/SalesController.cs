@@ -1,6 +1,9 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SalesApi.ViewModel.V1.Sales;
+using SalesApi.Application.Sales.Commands.CreateSale;
+using SalesApi.Application.Sales.Queries.GetAllSales;
 using SalesApi.ViewModel.V1.Common;
+using SalesApi.ViewModel.V1.Sales;
 
 namespace SalesApi.WebApi.Controllers.V1;
 
@@ -10,11 +13,11 @@ namespace SalesApi.WebApi.Controllers.V1;
 [Produces("application/json")]
 public class SalesController : ControllerBase
 {
-    private readonly ILogger<SalesController> _logger;
+    private readonly IMediator _mediator;
 
-    public SalesController(ILogger<SalesController> logger)
+    public SalesController(IMediator mediator)
     {
-        _logger = logger;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -22,15 +25,22 @@ public class SalesController : ControllerBase
     /// </summary>
     /// <param name="request">Sale creation request</param>
     /// <returns>Created sale</returns>
-    /// <response code="200">Sale created successfully</response>
-    /// <response code="400">Invalid request data</response>
+    /// <response code="201">Returns the newly created sale</response>
+    /// <response code="400">If the request is invalid</response>
     [HttpPost]
-    [ProducesResponseType(typeof(SaleViewModel.CreateResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(SaleViewModel.Response), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Create([FromBody] SaleViewModel.Request request)
+    public async Task<ActionResult<SaleViewModel.Response>> Create([FromBody] SaleViewModel.Request request)
     {
-        // TODO: Implement sale creation logic
-        return Ok(new SaleViewModel.CreateResponse());
+        var command = new CreateSaleCommand
+        {
+            CustomerName = request.CustomerName,
+            CustomerEmail = request.CustomerEmail,
+            Items = request.Items
+        };
+
+        var result = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetAll), result);
     }
 
     /// <summary>
@@ -39,11 +49,12 @@ public class SalesController : ControllerBase
     /// <returns>List of sales</returns>
     /// <response code="200">Returns the list of sales</response>
     [HttpGet]
-    [ProducesResponseType(typeof(SaleViewModel.ListResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll()
+    [ProducesResponseType(typeof(IEnumerable<SaleViewModel.Response>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<SaleViewModel.Response>>> GetAll()
     {
-        // TODO: Implement get all sales logic
-        return Ok(new SaleViewModel.ListResponse());
+        var query = new GetAllSalesQuery();
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 
     /// <summary>

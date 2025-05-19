@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using SalesApi.Application.Common.Mappings;
 using SalesApi.Domain.Entities;
+using SalesApi.Domain.ValueObjects;
 using SalesApi.ViewModel.V1.Sales;
 
 namespace SalesApi.Application.Sales.Queries.GetAllSales;
@@ -15,7 +16,8 @@ public record GetAllSalesQuery : IRequest<IEnumerable<SaleViewModel.Response>>, 
             {
                 ProductId = i.ProductId,
                 Quantity = i.Quantity,
-                UnitPrice = i.UnitPrice
+                UnitPrice = i.UnitPrice.ToDecimal(),
+                Discount = i.Discount.ToDecimal()
             })));
     }
 } 
