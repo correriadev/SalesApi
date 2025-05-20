@@ -78,6 +78,8 @@ public class Program
         {
             app.UseDeveloperExceptionPage();
             app.UseSwaggerDocumentation();
+
+            //TODO: drop database
         }
 
         app.UseHttpsRedirection();

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Xunit;
 using Newtonsoft.Json;
 using FluentAssertions;
-using System.Reflection.Metadata.Ecma335;
-using System.Xml;
+using SalesApi.ViewModel.V1.Products;
+using SalesApi.ViewModel.V1.Sales;
 
 namespace SalesApi.IntegrationTests
 {
@@ -21,27 +21,6 @@ namespace SalesApi.IntegrationTests
         }
     }
 
-    public class ProductResponse
-    {
-        public List<ProductData> Data { get; set; } = new();
-    }
-
-    public class ProductData
-    {
-        public Guid Id { get; set; }
-        public decimal Price { get; set; }
-    }
-
-    public class SalesResponse
-    {
-        public List<SaleData> Data { get; set; } = new();
-    }
-
-    public class SaleData
-    {
-        public Guid Id { get; set; }
-    }
-
     [TestCaseOrderer("SalesApi.IntegrationTests.CustomTestOrderer", "SalesApi.IntegrationTests")]
     public class SalesApiIntegrationTests
     {
@@ -49,24 +28,23 @@ namespace SalesApi.IntegrationTests
 
         public SalesApiIntegrationTests()
         {
-            _client = new HttpClient { BaseAddress = new Uri("http://ocelot-gateway:7777/api/v1") };
-            //_client = new HttpClient { BaseAddress = new Uri("http://localhost:7777") };
+            _client = new HttpClient { BaseAddress = new Uri("http://localhost:7777/api/v1") };
         }
 
         [Fact, TestPriority(0)]
-        //[Fact(Skip = "Este teste está desativado temporariamente.")]
         public async Task Create_Products()
         {
             for (int i = 1; i <= 10; i++)
             {
-                var newProduct = new
+                var newProduct = new ProductViewModel.Request
                 {
-                    title = $"titulo do produto - {i}",
-                    price = 5,
-                    description = $"Descricao do titulo {i}",
-                    category = $"Categoria {(int)i / 2}",
+                    Title = $"titulo do produto - {i}",
+                    Price = 5,
+                    Description = $"Descricao do titulo {i}",
+                    Category = $"Categoria {(int)i / 2}",
                     Image = "imagem"
                 };
+
                 var json = JsonConvert.SerializeObject(newProduct);
                 Console.WriteLine("Enviando JSON: " + json);
 
@@ -93,32 +71,29 @@ namespace SalesApi.IntegrationTests
             responseProducts.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var productsResponse = JsonConvert.DeserializeObject<ProductResponse>(jsonResponse);
+            var productsResponse = JsonConvert.DeserializeObject<List<ProductViewModel.Response>>(jsonResponse);
 
             Assert.NotNull(productsResponse);
-            Assert.NotNull(productsResponse.Data);
-            Assert.True(productsResponse.Data.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
+            Assert.True(productsResponse.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
 
             // 2. Selecionar dois produtos
-            var produto1 = productsResponse.Data[1]; // Segundo produto da lista
-            var produto2 = productsResponse.Data[0]; // Primeiro produto da lista
+            var produto1 = productsResponse[1]; // Segundo produto da lista
+            var produto2 = productsResponse[0]; // Primeiro produto da lista
 
             // 3. Criar a nova venda
-            var novaVenda = new
+            var novaVenda = new SaleViewModel.Request
             {
-                SaleNumber = new Random().Next(1000, 9999).ToString(), // Número aleatório para a venda
-                SaleDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"), // Data no formato ISO 8601
-                CustomerId = Guid.NewGuid(),
-                BranchId = Guid.NewGuid(),
-                Items = new List<object>
+                CustomerName = "Test Customer",
+                CustomerEmail = "test@email.com",
+                Items = new List<SaleItemViewModel>
                 {
-                    new
+                    new()
                     {
                         ProductId = produto1.Id,
                         Quantity = 3,
                         UnitPrice = produto1.Price,
                     },
-                    new
+                    new()
                     {
                         ProductId = produto2.Id,
                         Quantity = 2,
@@ -146,32 +121,29 @@ namespace SalesApi.IntegrationTests
             responseProducts.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var productsResponse = JsonConvert.DeserializeObject<ProductResponse>(jsonResponse);
+            var productsResponse = JsonConvert.DeserializeObject<List<ProductViewModel.Response>>(jsonResponse);
 
             Assert.NotNull(productsResponse);
-            Assert.NotNull(productsResponse.Data);
-            Assert.True(productsResponse.Data.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
+            Assert.True(productsResponse.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
 
             // 2. Selecionar dois produtos
-            var produto1 = productsResponse.Data[1]; // Segundo produto da lista
-            var produto2 = productsResponse.Data[0]; // Primeiro produto da lista
+            var produto1 = productsResponse[1]; // Segundo produto da lista
+            var produto2 = productsResponse[0]; // Primeiro produto da lista
 
             // 3. Criar a nova venda
-            var novaVenda = new
+            var novaVenda = new SaleViewModel.Request
             {
-                SaleNumber = new Random().Next(1000, 9999).ToString(), // Número aleatório para a venda
-                SaleDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"), // Data no formato ISO 8601
-                CustomerId = Guid.NewGuid(),
-                BranchId = Guid.NewGuid(),
-                Items = new List<object>
+                CustomerName = "Test Customer",
+                CustomerEmail = "test@email.com",
+                Items = new List<SaleItemViewModel>
                 {
-                    new
+                    new()
                     {
                         ProductId = produto1.Id,
                         Quantity = 3,
                         UnitPrice = produto1.Price,
                     },
-                    new
+                    new()
                     {
                         ProductId = produto2.Id,
                         Quantity = 5,
@@ -207,38 +179,33 @@ namespace SalesApi.IntegrationTests
             responseProducts.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var productsResponse = JsonConvert.DeserializeObject<ProductResponse>(jsonResponse);
+            var productsResponse = JsonConvert.DeserializeObject<List<ProductViewModel.Response>>(jsonResponse);
 
             Assert.NotNull(productsResponse);
-            Assert.NotNull(productsResponse.Data);
-            Assert.True(productsResponse.Data.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
+            Assert.True(productsResponse.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
 
             // 2. Selecionar dois produtos
-            var produto1 = productsResponse.Data[1]; // Segundo produto da lista
-            var produto2 = productsResponse.Data[0]; // Primeiro produto da lista
+            var produto1 = productsResponse[1]; // Segundo produto da lista
+            var produto2 = productsResponse[0]; // Primeiro produto da lista
 
             // 3. Criar a nova venda
-            var novaVenda = new
+            var novaVenda = new SaleViewModel.Request
             {
-                SaleNumber = new Random().Next(1000, 9999).ToString(), // Número aleatório para a venda
-                SaleDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"), // Data no formato ISO 8601
-                CustomerId = Guid.NewGuid(),
-                BranchId = Guid.NewGuid(),
-                Items = new List<object>
+                CustomerName = "Test Customer",
+                CustomerEmail = "test@email.com",
+                Items = new List<SaleItemViewModel>
                 {
-                    new
+                    new()
                     {
                         ProductId = produto1.Id,
                         Quantity = 9,
                         UnitPrice = produto1.Price,
-                        TotalPrice = 9 * produto1.Price
                     },
-                    new
+                    new()
                     {
                         ProductId = produto2.Id,
                         Quantity = 11,
                         UnitPrice = produto2.Price,
-                        TotalPrice = 11 * produto1.Price
                     }
                 }
             };
@@ -266,46 +233,40 @@ namespace SalesApi.IntegrationTests
             responseProducts.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var productsResponse = JsonConvert.DeserializeObject<ProductResponse>(jsonResponse);
+            var productsResponse = JsonConvert.DeserializeObject<List<ProductViewModel.Response>>(jsonResponse);
 
             Assert.NotNull(productsResponse);
-            Assert.NotNull(productsResponse.Data);
-            Assert.True(productsResponse.Data.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
+            Assert.True(productsResponse.Count >= 3, "O endpoint deve retornar pelo menos 3 produtos.");
 
-            // 2. Selecionar dois produtos
-            var produto1 = productsResponse.Data[1]; // Segundo produto da lista
-            var produto2 = productsResponse.Data[0]; // Primeiro produto da lista
-            var produto3 = productsResponse.Data[2]; // Primeiro produto da lista
+            // 2. Selecionar três produtos
+            var produto1 = productsResponse[1]; // Segundo produto da lista
+            var produto2 = productsResponse[0]; // Primeiro produto da lista
+            var produto3 = productsResponse[2]; // Terceiro produto da lista
 
             // 3. Criar a nova venda
-            var novaVenda = new
+            var novaVenda = new SaleViewModel.Request
             {
-                SaleNumber = new Random().Next(1000, 9999).ToString(), // Número aleatório para a venda
-                SaleDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"), // Data no formato ISO 8601
-                CustomerId = Guid.NewGuid(),
-                BranchId = Guid.NewGuid(),
-                Items = new List<object>
+                CustomerName = "Test Customer",
+                CustomerEmail = "test@email.com",
+                Items = new List<SaleItemViewModel>
                 {
-                    new
+                    new()
                     {
                         ProductId = produto1.Id,
                         Quantity = 9,
                         UnitPrice = produto1.Price,
-                        TotalPrice = 9 * produto1.Price
                     },
-                    new
+                    new()
                     {
                         ProductId = produto2.Id,
                         Quantity = 11,
                         UnitPrice = produto2.Price,
-                        TotalPrice = 11 * produto1.Price
                     },
-                    new
+                    new()
                     {
                         ProductId = produto3.Id,
                         Quantity = 20,
                         UnitPrice = produto3.Price,
-                        TotalPrice = 20 * produto1.Price
                     }
                 }
             };
@@ -335,32 +296,29 @@ namespace SalesApi.IntegrationTests
             responseProducts.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var productsResponse = JsonConvert.DeserializeObject<ProductResponse>(jsonResponse);
+            var productsResponse = JsonConvert.DeserializeObject<List<ProductViewModel.Response>>(jsonResponse);
 
             Assert.NotNull(productsResponse);
-            Assert.NotNull(productsResponse.Data);
-            Assert.True(productsResponse.Data.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
+            Assert.True(productsResponse.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
 
             // 2. Selecionar dois produtos
-            var produto1 = productsResponse.Data[1]; // Segundo produto da lista
-            var produto2 = productsResponse.Data[0]; // Primeiro produto da lista
+            var produto1 = productsResponse[1]; // Segundo produto da lista
+            var produto2 = productsResponse[0]; // Primeiro produto da lista
 
             // 3. Criar a nova venda
-            var novaVenda = new
+            var novaVenda = new SaleViewModel.Request
             {
-                SaleNumber = new Random().Next(1000, 9999).ToString(), // Número aleatório para a venda
-                SaleDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"), // Data no formato ISO 8601
-                CustomerId = Guid.NewGuid(),
-                BranchId = Guid.NewGuid(),
-                Items = new List<object>
+                CustomerName = "Test Customer",
+                CustomerEmail = "test@email.com",
+                Items = new List<SaleItemViewModel>
                 {
-                    new
+                    new()
                     {
                         ProductId = produto1.Id,
                         Quantity = 9,
                         UnitPrice = produto1.Price,
                     },
-                    new
+                    new()
                     {
                         ProductId = produto2.Id,
                         Quantity = 25,
@@ -369,7 +327,6 @@ namespace SalesApi.IntegrationTests
                 }
             };
 
-            var requestJson = JsonConvert.SerializeObject(novaVenda, Newtonsoft.Json.Formatting.Indented);
             var content = new StringContent(JsonConvert.SerializeObject(novaVenda), Encoding.UTF8, "application/json");
 
             // 4. Enviar a requisição para criar a venda
@@ -393,22 +350,20 @@ namespace SalesApi.IntegrationTests
         [Fact, TestPriority(10)]
         public async Task Should_Cancel_Sale()
         {
-            // 1. Buscar produtos do endpoint
-            var responseProducts = await _client.GetAsync("/sales");
-            responseProducts.EnsureSuccessStatusCode();
+            // 1. Buscar vendas do endpoint
+            var responseSales = await _client.GetAsync("/sales");
+            responseSales.EnsureSuccessStatusCode();
 
-            var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var salesResponse = JsonConvert.DeserializeObject<SalesResponse>(jsonResponse);
+            var jsonResponse = await responseSales.Content.ReadAsStringAsync();
+            var salesResponse = JsonConvert.DeserializeObject<List<SaleViewModel.Response>>(jsonResponse);
 
             Assert.NotNull(salesResponse);
-            Assert.NotNull(salesResponse.Data);
-            Assert.True(salesResponse.Data.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
+            Assert.True(salesResponse.Count >= 1, "O endpoint deve retornar pelo menos 1 venda.");
 
-            // 2. Selecionar dois produtos
-            var sales = salesResponse.Data[0]; // Segundo produto da lista
+            // 2. Selecionar uma venda
+            var sale = salesResponse[0];
 
-            var saleId = sales.Id;
-            var response = await _client.DeleteAsync($"/sales/{saleId}");
+            var response = await _client.DeleteAsync($"/sales/{sale.Id}");
 
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();

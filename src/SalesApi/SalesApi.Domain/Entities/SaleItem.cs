@@ -21,15 +21,30 @@ public class SaleItem : Entity
         Total = Money.Zero;
     } // For EF Core
 
-    public SaleItem(Guid productId, int quantity, Money unitPrice, Money discount)
+    public SaleItem(Guid productId, int quantity, Money unitPrice)
     {
         ValidateQuantity(quantity, nameof(Quantity));
         
         ProductId = productId;
         Quantity = quantity;
         UnitPrice = unitPrice;
-        Discount = discount;
+        Discount = CalculateDiscount(quantity, unitPrice);
         Total = CalculateTotal();
+    }
+
+    private Money CalculateDiscount(int quantity, Money unitPrice)
+    {
+        if (quantity < BusinessRules.SaleItem.MIN_QUANTITY_FOR_DISCOUNT)
+        {
+            return Money.Zero;
+        }
+
+        var subtotal = unitPrice * quantity;
+        var discountPercentage = quantity >= BusinessRules.SaleItem.MIN_QUANTITY_FOR_HIGHER_DISCOUNT 
+            ? BusinessRules.SaleItem.HIGHER_DISCOUNT_PERCENTAGE 
+            : BusinessRules.SaleItem.STANDARD_DISCOUNT_PERCENTAGE;
+
+        return subtotal * discountPercentage;
     }
 
     private Money CalculateTotal() => 
@@ -38,19 +53,16 @@ public class SaleItem : Entity
     public void UpdateQuantity(int quantity)
     {
         ValidateQuantity(quantity, nameof(Quantity));
+        
         Quantity = quantity;
+        Discount = CalculateDiscount(quantity, UnitPrice);
         Total = CalculateTotal();
     }
 
     public void UpdateUnitPrice(Money unitPrice)
     {
         UnitPrice = unitPrice;
-        Total = CalculateTotal();
-    }
-
-    public void UpdateDiscount(Money discount)
-    {
-        Discount = discount;
+        Discount = CalculateDiscount(Quantity, unitPrice);
         Total = CalculateTotal();
     }
 
@@ -58,5 +70,14 @@ public class SaleItem : Entity
     {
         Sale = sale;
         SaleId = sale.Id;
+    }
+
+    private static void ValidateQuantity(int quantity, string propertyName)
+    {
+        if (quantity <= 0)
+            throw new ArgumentException($"{propertyName} must be greater than zero", propertyName);
+        
+        if (quantity > BusinessRules.SaleItem.MAX_QUANTITY)
+            throw new ArgumentException(BusinessRules.SaleItem.GetMaxQuantityExceededMessage(quantity));
     }
 } 

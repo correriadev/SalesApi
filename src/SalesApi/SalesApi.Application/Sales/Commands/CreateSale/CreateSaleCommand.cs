@@ -17,12 +17,33 @@ public record CreateSaleCommand : IRequest<SaleViewModel.Response>, IMapFrom<Sal
     public void Mapping(Profile profile)
     {
         profile.CreateMap<SaleViewModel.Request, CreateSaleCommand>();
+        profile.CreateMap<SaleItemViewModel, SaleItem>()
+            .ConstructUsing((src, ctx) => new SaleItem(
+                src.ProductId,
+                src.Quantity,
+                Money.FromDecimal(src.UnitPrice)
+            ));
         profile.CreateMap<CreateSaleCommand, Sale>()
-            .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items.Select(i => new SaleItem(
-                i.ProductId,
-                i.Quantity,
-                Money.FromDecimal(i.UnitPrice),
-                Money.FromDecimal(i.Discount)
-            ))));
+            .ConstructUsing((src, ctx) => new Sale("SALE-" + Guid.NewGuid().ToString().Substring(0, 8), Guid.NewGuid(), Guid.NewGuid()))
+            .AfterMap((src, dest, context) =>
+            {
+                foreach (var item in src.Items)
+                {
+                    var saleItem =  new SaleItem(
+                        item.ProductId,
+                        item.Quantity,
+                        Money.FromDecimal(item.UnitPrice)
+                    );
+                }
+                dest.RecalculateTotal();
+            });
+        profile.CreateMap<Sale, SaleViewModel.Response>()
+            .ForMember(d => d.Items, opt => opt.MapFrom(s => s.Items.Select(i => new SaleItemViewModel
+            {
+                ProductId = i.ProductId,
+                Quantity = i.Quantity,
+                UnitPrice = i.UnitPrice.ToDecimal(),
+                Discount = i.Discount.ToDecimal()
+            })));
     }
 } 

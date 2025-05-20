@@ -1,5 +1,6 @@
 using AutoMapper;
 using System.Reflection;
+using SalesApi.Domain.ValueObjects;
 
 namespace SalesApi.Application.Common.Mappings;
 
@@ -8,6 +9,10 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+
+        // Configure Money to decimal mapping
+        CreateMap<Money, decimal>().ConvertUsing(m => m.ToDecimal());
+        CreateMap<decimal, Money>().ConvertUsing(d => Money.FromDecimal(d));
     }
 
     private void ApplyMappingsFromAssembly(Assembly assembly)

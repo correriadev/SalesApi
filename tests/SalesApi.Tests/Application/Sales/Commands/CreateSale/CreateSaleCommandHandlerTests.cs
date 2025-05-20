@@ -39,9 +39,8 @@ public class CreateSaleCommandHandlerTests
                 new()
                 {
                     ProductId = Guid.NewGuid(),
-                    Quantity = 2,
-                    UnitPrice = 10.99m,
-                    Discount = 0m
+                    Quantity = 4,
+                    UnitPrice = 10.99m
                 }
             }
         };
@@ -50,15 +49,23 @@ public class CreateSaleCommandHandlerTests
         sale.AddItem(new SaleItem(
             command.Items[0].ProductId,
             command.Items[0].Quantity,
-            Money.FromDecimal(command.Items[0].UnitPrice),
-            Money.FromDecimal(command.Items[0].Discount)
+            Money.FromDecimal(command.Items[0].UnitPrice)
         ));
 
         var expectedResponse = new SaleViewModel.Response
         {
             CustomerName = command.CustomerName,
             CustomerEmail = command.CustomerEmail,
-            Items = command.Items
+            Items = new List<SaleItemViewModel>
+            {
+                new()
+                {
+                    ProductId = command.Items[0].ProductId,
+                    Quantity = command.Items[0].Quantity,
+                    UnitPrice = command.Items[0].UnitPrice,
+                    Discount = 4.40m // 10% discount for 4 items
+                }
+            }
         };
 
         _mapper.Map<Sale>(command).Returns(sale);
@@ -134,9 +141,8 @@ public class CreateSaleCommandHandlerTests
                 new()
                 {
                     ProductId = Guid.NewGuid(),
-                    Quantity = 2,
-                    UnitPrice = 10.99m,
-                    Discount = 0m
+                    Quantity = 4,
+                    UnitPrice = 10.99m
                 }
             }
         };
@@ -145,8 +151,7 @@ public class CreateSaleCommandHandlerTests
         sale.AddItem(new SaleItem(
             command.Items[0].ProductId,
             command.Items[0].Quantity,
-            Money.FromDecimal(command.Items[0].UnitPrice),
-            Money.FromDecimal(command.Items[0].Discount)
+            Money.FromDecimal(command.Items[0].UnitPrice)
         ));
 
         _mapper.Map<Sale>(command).Returns(sale);

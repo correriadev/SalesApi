@@ -42,16 +42,14 @@ public class GetAllSalesQueryHandlerTests
 
         sales[0].AddItem(new SaleItem(
             productId1,
-            2,
-            Money.FromDecimal(10.99m),
-            Money.FromDecimal(0m)
+            4,
+            Money.FromDecimal(10.99m)
         ));
 
         sales[1].AddItem(new SaleItem(
             productId2,
-            3,
-            Money.FromDecimal(20.99m),
-            Money.FromDecimal(2.99m)
+            10,
+            Money.FromDecimal(20.99m)
         ));
 
         var expectedResponses = new List<SaleViewModel.Response>
@@ -65,9 +63,9 @@ public class GetAllSalesQueryHandlerTests
                     new()
                     {
                         ProductId = productId1,
-                        Quantity = 2,
+                        Quantity = 4,
                         UnitPrice = 10.99m,
-                        Discount = 0m
+                        Discount = 4.40m
                     }
                 }
             },
@@ -80,9 +78,9 @@ public class GetAllSalesQueryHandlerTests
                     new()
                     {
                         ProductId = productId2,
-                        Quantity = 3,
+                        Quantity = 10,
                         UnitPrice = 20.99m,
-                        Discount = 2.99m
+                        Discount = 41.98m
                     }
                 }
             }

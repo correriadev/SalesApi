@@ -2,6 +2,7 @@ using FluentAssertions;
 using Xunit;
 using SalesApi.Domain.Entities;
 using SalesApi.Domain.ValueObjects;
+using SalesApi.Domain.Common;
 
 namespace SalesApi.Tests.Domain.Entities;
 
@@ -45,8 +46,7 @@ public class SaleTests
         var saleItem = new SaleItem(
             Guid.NewGuid(),
             2,
-            Money.FromDecimal(50m),
-            Money.FromDecimal(5m)
+            Money.FromDecimal(50m)
         );
 
         // Act
@@ -55,7 +55,81 @@ public class SaleTests
         // Assert
         sale.Items.Should().ContainSingle();
         sale.Items.Should().Contain(saleItem);
-        sale.TotalAmount.Should().Be(Money.FromDecimal(95m)); // (50 * 2) - 5
+        sale.TotalAmount.Should().Be(Money.FromDecimal(100m)); // (50 * 2) - 0
+    }
+
+    [Fact]
+    public void Sale_AddItem_WithExistingProduct_ShouldUpdateQuantity()
+    {
+        // Arrange
+        var sale = new Sale("SALE-001", Guid.NewGuid(), Guid.NewGuid());
+        var productId = Guid.NewGuid();
+        var saleItem1 = new SaleItem(
+            productId,
+            2,
+            Money.FromDecimal(50m)
+        );
+        var saleItem2 = new SaleItem(
+            productId,
+            3,
+            Money.FromDecimal(50m)
+        );
+
+        // Act
+        sale.AddItem(saleItem1);
+        sale.AddItem(saleItem2);
+
+        // Assert
+        sale.Items.Should().ContainSingle();
+        sale.Items.First().Quantity.Should().Be(5);
+        // When quantities are combined to 5, it qualifies for 10% discount
+        var expectedTotal = Money.FromDecimal(225m); // (50 * 5) * 0.9
+        sale.TotalAmount.Should().Be(expectedTotal);
+    }
+
+    [Fact]
+    public void Sale_AddItem_WithExistingProduct_WhenExceedingMaxQuantity_ShouldThrowException()
+    {
+        // Arrange
+        var sale = new Sale("SALE-001", Guid.NewGuid(), Guid.NewGuid());
+        var productId = Guid.NewGuid();
+        var saleItem1 = new SaleItem(
+            productId,
+            BusinessRules.SaleItem.MAX_QUANTITY - 1,
+            Money.FromDecimal(50m)
+        );
+        var saleItem2 = new SaleItem(
+            productId,
+            2,
+            Money.FromDecimal(50m)
+        );
+
+        // Act
+        sale.AddItem(saleItem1);
+
+        // Assert
+        var action = () => sale.AddItem(saleItem2);
+        action.Should().Throw<InvalidOperationException>()
+            .WithMessage($"*exceed the maximum limit of {BusinessRules.SaleItem.MAX_QUANTITY} items per product*");
+    }
+
+    [Fact]
+    public void Sale_AddItem_WhenCancelled_ShouldThrowException()
+    {
+        // Arrange
+        var sale = new Sale("SALE-001", Guid.NewGuid(), Guid.NewGuid());
+        var saleItem = new SaleItem(
+            Guid.NewGuid(),
+            2,
+            Money.FromDecimal(50m)
+        );
+        sale.AddItem(saleItem);
+        sale.Cancel();
+
+        // Act & Assert
+        var action = () => sale.AddItem(saleItem);
+        action.Should().Throw<InvalidOperationException>()
+            .WithMessage("Cannot add items to a cancelled sale");
     }
 
     [Fact]
@@ -66,8 +140,7 @@ public class SaleTests
         var saleItem = new SaleItem(
             Guid.NewGuid(),
             2,
-            Money.FromDecimal(50m),
-            Money.FromDecimal(5m)
+            Money.FromDecimal(50m)
         );
         sale.AddItem(saleItem);
 
@@ -80,10 +153,35 @@ public class SaleTests
     }
 
     [Fact]
+    public void Sale_RemoveItem_WhenCancelled_ShouldThrowException()
+    {
+        // Arrange
+        var sale = new Sale("SALE-001", Guid.NewGuid(), Guid.NewGuid());
+        var saleItem = new SaleItem(
+            Guid.NewGuid(),
+            2,
+            Money.FromDecimal(50m)
+        );
+        sale.AddItem(saleItem);
+        sale.Cancel();
+
+        // Act & Assert
+        var action = () => sale.RemoveItem(saleItem);
+        action.Should().Throw<InvalidOperationException>()
+            .WithMessage("Cannot remove items from a cancelled sale");
+    }
+
+    [Fact]
     public void Sale_Cancel_ShouldCancelSuccessfully()
     {
         // Arrange
         var sale = new Sale("SALE-001", Guid.NewGuid(), Guid.NewGuid());
+        var saleItem = new SaleItem(
+            Guid.NewGuid(),
+            2,
+            Money.FromDecimal(50m)
+        );
+        sale.AddItem(saleItem);
 
         // Act
         sale.Cancel();
@@ -97,11 +195,29 @@ public class SaleTests
     {
         // Arrange
         var sale = new Sale("SALE-001", Guid.NewGuid(), Guid.NewGuid());
+        var saleItem = new SaleItem(
+            Guid.NewGuid(),
+            2,
+            Money.FromDecimal(50m)
+        );
+        sale.AddItem(saleItem);
         sale.Cancel();
 
         // Act & Assert
         var action = () => sale.Cancel();
         action.Should().Throw<InvalidOperationException>()
             .WithMessage("Sale is already cancelled");
+    }
+
+    [Fact]
+    public void Sale_Cancel_WhenNoItems_ShouldThrowInvalidOperationException()
+    {
+        // Arrange
+        var sale = new Sale("SALE-001", Guid.NewGuid(), Guid.NewGuid());
+
+        // Act & Assert
+        var action = () => sale.Cancel();
+        action.Should().Throw<InvalidOperationException>()
+            .WithMessage("Cannot cancel a sale with no items");
     }
 } 
