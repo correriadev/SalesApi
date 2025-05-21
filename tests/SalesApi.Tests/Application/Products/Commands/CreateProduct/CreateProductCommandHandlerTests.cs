@@ -1,7 +1,6 @@
 using AutoMapper;
 using MediatR;
 using NSubstitute;
-using SalesApi.Application.Common.Mappings;
 using SalesApi.Application.Products.Commands.CreateProduct;
 using SalesApi.Domain.Entities;
 using SalesApi.Domain.Repositories;
@@ -28,8 +27,7 @@ public class CreateProductCommandHandlerTests
 
         var configuration = new MapperConfiguration(cfg =>
         {
-            cfg.AddMaps(typeof(IMapFrom<>).Assembly);
-            cfg.CreateMap<Product, ProductViewModel.Response>();
+            cfg.AddProfile<SalesApi.Infrastructure.Mappings.MappingProfile>();
         });
         _mapper = configuration.CreateMapper();
 

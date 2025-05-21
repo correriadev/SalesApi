@@ -69,6 +69,9 @@ public class Program
         // Add Application services (MediatR and AutoMapper)
         builder.Services.AddApplication();
 
+        // Add Infrastructure services
+        builder.Services.AddInfrastructure();
+
         builder.Services.AddInfrastructureDataSql(builder.Configuration);   
 
         var app = builder.Build();

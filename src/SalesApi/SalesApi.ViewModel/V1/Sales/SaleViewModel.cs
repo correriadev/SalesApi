@@ -56,4 +56,5 @@ public record SaleItemViewModel
     public int Quantity { get; init; }
     public decimal UnitPrice { get; init; }
     public decimal Discount { get; init; }
+    public decimal Total { get; init; }
 } 

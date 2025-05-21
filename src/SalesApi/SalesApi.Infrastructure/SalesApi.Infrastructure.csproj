@@ -12,9 +12,13 @@
     <PackageReference Include="AspNetCore.HealthChecks.MongoDb" />
     <PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" />
     <PackageReference Include="RabbitMQ.Client" />
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SalesApi.Domain\SalesApi.Domain.csproj" />
     <ProjectReference Include="..\SalesApi.Infrastructure.Data.Sql\SalesApi.Infrastructure.Data.Sql.csproj" />
+    <ProjectReference Include="..\SalesApi.Application\SalesApi.Application.csproj" />
+    <ProjectReference Include="..\SalesApi.ViewModel\SalesApi.ViewModel.csproj" />
   </ItemGroup>
 </Project>

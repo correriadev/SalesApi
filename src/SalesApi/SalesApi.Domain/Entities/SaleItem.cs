@@ -28,11 +28,11 @@ public class SaleItem : Entity
         ProductId = productId;
         Quantity = quantity;
         UnitPrice = unitPrice;
-        Discount = CalculateDiscount(quantity, unitPrice);
+        Discount = CalculateDiscount();
         Total = CalculateTotal();
     }
 
-    private Money CalculateDiscount(int quantity, Money unitPrice)
+    public Money CalculateDiscount(int quantity, Money unitPrice)
     {
         if (quantity < BusinessRules.SaleItem.MIN_QUANTITY_FOR_DISCOUNT)
         {
@@ -47,6 +47,8 @@ public class SaleItem : Entity
         return subtotal * discountPercentage;
     }
 
+    public Money CalculateDiscount() => CalculateDiscount(Quantity, UnitPrice);
+
     private Money CalculateTotal() => 
         (UnitPrice * Quantity) - Discount;
 
@@ -55,14 +57,14 @@ public class SaleItem : Entity
         ValidateQuantity(quantity, nameof(Quantity));
         
         Quantity = quantity;
-        Discount = CalculateDiscount(quantity, UnitPrice);
+        Discount = CalculateDiscount();
         Total = CalculateTotal();
     }
 
     public void UpdateUnitPrice(Money unitPrice)
     {
         UnitPrice = unitPrice;
-        Discount = CalculateDiscount(Quantity, unitPrice);
+        Discount = CalculateDiscount();
         Total = CalculateTotal();
     }
 
