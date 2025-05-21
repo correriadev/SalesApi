@@ -1,4 +1,5 @@
 using SalesApi.Domain.Common;
+using SalesApi.Domain.Exceptions;
 using SalesApi.Domain.ValueObjects;
 
 namespace SalesApi.Domain.Entities;
@@ -39,10 +40,10 @@ public class Sale : Entity
     public void AddItem(SaleItem item)
     {
         if (Cancelled)
-            throw new InvalidOperationException("Cannot add items to a cancelled sale");
+            throw new DomainException("BadRequest", "Invalid Sale", "Cannot add items to a cancelled sale");
 
         if (item == null)
-            throw new ArgumentNullException(nameof(item));
+            throw new DomainException("BadRequest", "Invalid Sale", "Item cannot be null");
 
         // First check if this exact item instance is already in the collection
         if (Items.Contains(item))
@@ -54,7 +55,7 @@ public class Sale : Entity
         {
             // If adding the new quantity would exceed the limit, throw an exception
             if (existingItem.Quantity + item.Quantity > BusinessRules.SaleItem.MAX_QUANTITY)
-                throw new InvalidOperationException($"Adding {item.Quantity} more items would exceed the maximum limit of {BusinessRules.SaleItem.MAX_QUANTITY} items per product");
+                throw new DomainException("BadRequest", "Invalid Sale", $"You cannot buy more than {BusinessRules.SaleItem.MAX_QUANTITY} pieces of the same item");
 
             // Update the existing item's quantity
             existingItem.UpdateQuantity(existingItem.Quantity + item.Quantity);
@@ -71,13 +72,13 @@ public class Sale : Entity
     public void RemoveItem(SaleItem item)
     {
         if (Cancelled)
-            throw new InvalidOperationException("Cannot remove items from a cancelled sale");
+            throw new DomainException("BadRequest", "Invalid Sale", "Cannot remove items from a cancelled sale");
 
         if (item == null)
-            throw new ArgumentNullException(nameof(item));
+            throw new DomainException("BadRequest", "Invalid Sale", "Item cannot be null");
 
         if (!Items.Contains(item))
-            throw new InvalidOperationException("Item does not belong to this sale");
+            throw new DomainException("BadRequest", "Invalid Sale", "Item does not belong to this sale");
 
         Items.Remove(item);
         RecalculateTotal();
@@ -86,10 +87,10 @@ public class Sale : Entity
     public void Cancel()
     {
         if (Cancelled)
-            throw new InvalidOperationException("Sale is already cancelled");
+            throw new DomainException("BadRequest", "Invalid Sale", "Sale is already cancelled");
 
         if (Items.Count == 0)
-            throw new InvalidOperationException("Cannot cancel a sale with no items");
+            throw new DomainException("BadRequest", "Invalid Sale", "Cannot cancel a sale with no items");
 
         Cancelled = true;
     }
@@ -108,12 +109,12 @@ public class Sale : Entity
     private static void ValidateString(string value, string propertyName)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new ArgumentException($"{propertyName} cannot be null or empty", propertyName);
+            throw new DomainException("BadRequest", "Invalid Sale", $"{propertyName} cannot be null or empty");
     }
 
     private static void ValidateGuid(Guid value, string propertyName)
     {
         if (value == Guid.Empty)
-            throw new ArgumentException($"{propertyName} cannot be empty", propertyName);
+            throw new DomainException("BadRequest", "Invalid Sale", $"{propertyName} cannot be empty");
     }
 } 

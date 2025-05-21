@@ -14,6 +14,7 @@ using SalesApi.Infrastructure;
 using SalesApi.Infrastructure.Data.Sql;
 using SalesApi.WebApi.Controllers.V1;
 using System.Text.Json.Serialization;
+using SalesApi.Api.Middleware;
 
 namespace SalesApi.WebApi;
 
@@ -72,7 +73,7 @@ public class Program
         // Add Infrastructure services
         builder.Services.AddInfrastructure();
 
-        builder.Services.AddInfrastructureDataSql(builder.Configuration);   
+        builder.Services.AddInfrastructureDataSql(builder.Configuration);
 
         var app = builder.Build();
 
@@ -86,6 +87,10 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        
+        // Add exception handling middleware before routing and authorization
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+        
         app.UseRouting();
         app.UseAuthorization();
 
