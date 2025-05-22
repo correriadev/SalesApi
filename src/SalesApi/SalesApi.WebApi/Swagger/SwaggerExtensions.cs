@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using System.Text.Json.Serialization;
+using SalesApi.WebApi.Swagger;
 
 namespace SalesApi.WebApi.Swagger;
 
@@ -12,26 +13,36 @@ public static class SwaggerExtensions
     {
         services.AddSwaggerGen(c =>
         {
-            var provider = services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
-
-            foreach (var description in provider.ApiVersionDescriptions)
+            c.SwaggerDoc("v1", new OpenApiInfo
             {
-                c.SwaggerDoc(description.GroupName, new OpenApiInfo
-                {
-                    Title = "SalesApi",
-                    Version = description.ApiVersion.ToString(),
-                    Description = "Sales API"
-                });
-            }
+                Title = "Sales API",
+                Version = "v1",
+                Description = "API for managing sales and products"
+            });
 
-            // Configure schema IDs
+            c.SchemaFilter<ApiResponseSchemaFilter>();
+
+            // Configure schema IDs to handle nested and generic types
             c.CustomSchemaIds(type =>
             {
-                var schemaName = type.GetCustomAttributes(typeof(JsonSchemaNameAttribute), false)
-                    .OfType<JsonSchemaNameAttribute>()
-                    .FirstOrDefault()?.Name;
+                string GetTypeName(Type t)
+                {
+                    if (t.IsGenericType)
+                    {
+                        var genericArguments = t.GetGenericArguments()
+                            .Select(GetTypeName);
+                        return $"{t.Name.Split('`')[0]}Of{string.Join("And", genericArguments)}";
+                    }
+                    
+                    if (t.IsNested)
+                    {
+                        return $"{t.DeclaringType?.Name}{t.Name}";
+                    }
+                    
+                    return t.Name;
+                }
 
-                return schemaName ?? type.Name;
+                return GetTypeName(type);
             });
         });
 
@@ -40,20 +51,10 @@ public static class SwaggerExtensions
 
     public static IApplicationBuilder UseSwaggerDocumentation(this IApplicationBuilder app)
     {
-        var provider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
-
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
-            foreach (var description in provider.ApiVersionDescriptions)
-            {
-                c.SwaggerEndpoint(
-                    $"/swagger/{description.GroupName}/swagger.json",
-                    $"SalesApi {description.GroupName.ToUpperInvariant()}");
-            }
-
-            c.RoutePrefix = string.Empty;
-            c.DocumentTitle = "SalesApi Documentation";
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sales API v1");
         });
 
         return app;

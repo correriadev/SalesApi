@@ -8,9 +8,7 @@ using SalesApi.ViewModel.V1.Products;
 namespace SalesApi.WebApi.Controllers.V1;
 
 [ApiController]
-[ApiVersion("1.0")]
-[Route("api/v{version:apiVersion}/products")]
-[Produces("application/json")]
+[Route("api/v1/[controller]")]
 public class ProductsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -28,9 +26,9 @@ public class ProductsController : ControllerBase
     /// <response code="201">Returns the newly created product</response>
     /// <response code="400">If the request is invalid</response>
     [HttpPost]
-    [ProducesResponseType(typeof(ProductViewModel.Response), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<ProductViewModel.Response>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<CreatedAtActionResult> Create([FromBody] ProductViewModel.Request request)
+    public async Task<ActionResult<ApiResponse<ProductViewModel.Response>>> CreateProduct(ProductViewModel.Request request)
     {
         var command = new CreateProductCommand
         {
@@ -38,11 +36,11 @@ public class ProductsController : ControllerBase
             Description = request.Description,
             Price = request.Price,
             Category = request.Category,
-            Image = request.Image,
+            Image = request.Image
         };
 
         var result = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetAll), result);
+        return Ok(ApiResponse<ProductViewModel.Response>.Success(result, "Product successfully created"));
     }
 
     /// <summary>
@@ -51,11 +49,11 @@ public class ProductsController : ControllerBase
     /// <returns>List of products</returns>
     /// <response code="200">Returns the list of products</response>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<ProductViewModel.Response>), StatusCodes.Status200OK)]
-    public async Task<OkObjectResult> GetAll()
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<ProductViewModel.Response>>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiResponse<IEnumerable<ProductViewModel.Response>>>> GetAllProducts()
     {
         var query = new GetAllProductsQuery();
         var result = await _mediator.Send(query);
-        return Ok(result);
+        return Ok(ApiResponse<IEnumerable<ProductViewModel.Response>>.Success(result, "Products retrieved successfully"));
     }
 } 

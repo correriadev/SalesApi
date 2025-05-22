@@ -8,9 +8,7 @@ using SalesApi.ViewModel.V1.Sales;
 namespace SalesApi.WebApi.Controllers.V1;
 
 [ApiController]
-[ApiVersion("1.0")]
-[Route("api/v{version:apiVersion}/sales")]
-[Produces("application/json")]
+[Route("api/v1/[controller]")]
 public class SalesController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -28,9 +26,9 @@ public class SalesController : ControllerBase
     /// <response code="201">Returns the newly created sale</response>
     /// <response code="400">If the request is invalid</response>
     [HttpPost]
-    [ProducesResponseType(typeof(SaleViewModel.Response), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<SaleViewModel.Response>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<CreatedAtActionResult> Create([FromBody] SaleViewModel.Request request)
+    public async Task<ActionResult<ApiResponse<SaleViewModel.Response>>> CreateSale(SaleViewModel.Request request)
     {
         var command = new CreateSaleCommand
         {
@@ -40,7 +38,7 @@ public class SalesController : ControllerBase
         };
 
         var result = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetAll), result);
+        return Ok(ApiResponse<SaleViewModel.Response>.Success(result, "Sale successfully created"));
     }
 
     /// <summary>
@@ -49,12 +47,12 @@ public class SalesController : ControllerBase
     /// <returns>List of sales</returns>
     /// <response code="200">Returns the list of sales</response>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<SaleViewModel.Response>), StatusCodes.Status200OK)]
-    public async Task<OkObjectResult> GetAll()
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<SaleViewModel.Response>>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiResponse<IEnumerable<SaleViewModel.Response>>>> GetAllSales()
     {
         var query = new GetAllSalesQuery();
         var result = await _mediator.Send(query);
-        return Ok(result);
+        return Ok(ApiResponse<IEnumerable<SaleViewModel.Response>>.Success(result, "Sales retrieved successfully"));
     }
 
     /// <summary>
