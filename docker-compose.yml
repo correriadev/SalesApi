@@ -14,7 +14,7 @@ services:
       - sales-api
       - sales-api-worker
     networks:
-      - sales-network
+      - evaluation-network
 
   sales-api:
     build:
@@ -31,7 +31,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8090
     networks:
-      - sales-network
+      - evaluation-network
 
   sales-api-worker:
     build:
@@ -48,7 +48,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8091
     networks:
-      - sales-network
+      - evaluation-network
 
   postgres:
     image: postgres:16-alpine
@@ -62,7 +62,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - sales-network
+      - evaluation-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -77,7 +77,7 @@ services:
     volumes:
       - mongodb-data:/data/db
     networks:
-      - sales-network
+      - evaluation-network
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
@@ -96,7 +96,7 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
-      - sales-network
+      - evaluation-network
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
       interval: 30s
@@ -104,7 +104,7 @@ services:
       retries: 5
 
 networks:
-  sales-network:
+  evaluation-network:
     driver: bridge
 
 volumes:
