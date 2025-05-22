@@ -29,6 +29,7 @@ namespace SalesApi.IntegrationTests
         public SalesApiIntegrationTests()
         {
             _client = new HttpClient { BaseAddress = new Uri("http://localhost:7777/api/v1") };
+            //_client = new HttpClient { BaseAddress = new Uri("http://localhost:53348/api/v1") };
         }
 
         [Fact, TestPriority(0)]
@@ -335,10 +336,8 @@ namespace SalesApi.IntegrationTests
 
             if (!response.IsSuccessStatusCode)
             {
-                Assert.Fail($"[ERRO] Requisição falhou!\n" +
-                            $"Response: {result}");
                 response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
-                result.Should().Contain("You can buy only 20 pices of a item");
+                result.Should().Contain("You can buy only 20 pieces of a item");
             }
             else
             {

@@ -46,17 +46,15 @@ public class MappingProfile : Profile
                 var customerId = Guid.NewGuid(); // In a real application, this would come from a customer service
                 var branchId = Guid.NewGuid();   // In a real application, this would come from configuration
                 var saleNumber = $"SALE-{Guid.NewGuid().ToString().Substring(0, 8)}";
-                return new Sale(saleNumber, customerId, branchId);
-            })
-            .AfterMap((src, dest, context) =>
-            {
-                dest.Items.Clear();
+                var sale = new Sale(saleNumber, customerId, branchId);
                 
                 foreach (var item in src.Items)
                 {
-                    var saleItem = context.Mapper.Map<SaleItem>(item);
-                    dest.AddItem(saleItem);
+                    var saleItem = ctx.Mapper.Map<SaleItem>(item);
+                    sale.AddItem(saleItem);
                 }
+                
+                return sale;
             });
         CreateMap<Sale, SaleViewModel.Response>()
             .ForMember(d => d.TotalAmount, opt => opt.MapFrom(s => s.TotalAmount.ToDecimal()))
