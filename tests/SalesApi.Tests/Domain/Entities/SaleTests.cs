@@ -3,6 +3,7 @@ using Xunit;
 using SalesApi.Domain.Entities;
 using SalesApi.Domain.ValueObjects;
 using SalesApi.Domain.Common;
+using SalesApi.Domain.Exceptions;
 
 namespace SalesApi.Tests.Domain.Entities;
 
@@ -26,7 +27,7 @@ public class SaleTests
     [InlineData("")]
     [InlineData(null)]
     [InlineData("   ")]
-    public void Sale_WithInvalidSaleNumber_ShouldThrowArgumentException(string? invalidSaleNumber)
+    public void Sale_WithInvalidSaleNumber_ShouldThrowDomainException(string? invalidSaleNumber)
     {
         // Act & Assert
         var action = () => new Sale(
@@ -34,7 +35,7 @@ public class SaleTests
             Guid.NewGuid(),
             Guid.NewGuid()
         );
-        action.Should().Throw<ArgumentException>()
+        action.Should().Throw<DomainException>()
             .WithMessage("*SaleNumber cannot be null or empty*");
     }
 
@@ -109,8 +110,8 @@ public class SaleTests
 
         // Assert
         var action = () => sale.AddItem(saleItem2);
-        action.Should().Throw<InvalidOperationException>()
-            .WithMessage($"*exceed the maximum limit of {BusinessRules.SaleItem.MAX_QUANTITY} items per product*");
+        action.Should().Throw<DomainException>()
+            .WithMessage($"You cannot buy more than {BusinessRules.SaleItem.MAX_QUANTITY} pieces of the same item");
     }
 
     [Fact]
@@ -128,7 +129,7 @@ public class SaleTests
 
         // Act & Assert
         var action = () => sale.AddItem(saleItem);
-        action.Should().Throw<InvalidOperationException>()
+        action.Should().Throw<DomainException>()
             .WithMessage("Cannot add items to a cancelled sale");
     }
 
@@ -167,7 +168,7 @@ public class SaleTests
 
         // Act & Assert
         var action = () => sale.RemoveItem(saleItem);
-        action.Should().Throw<InvalidOperationException>()
+        action.Should().Throw<DomainException>()
             .WithMessage("Cannot remove items from a cancelled sale");
     }
 
@@ -191,7 +192,7 @@ public class SaleTests
     }
 
     [Fact]
-    public void Sale_Cancel_WhenAlreadyCancelled_ShouldThrowInvalidOperationException()
+    public void Sale_Cancel_WhenAlreadyCancelled_ShouldThrowDomainException()
     {
         // Arrange
         var sale = new Sale("SALE-001", Guid.NewGuid(), Guid.NewGuid());
@@ -205,19 +206,19 @@ public class SaleTests
 
         // Act & Assert
         var action = () => sale.Cancel();
-        action.Should().Throw<InvalidOperationException>()
+        action.Should().Throw<DomainException>()
             .WithMessage("Sale is already cancelled");
     }
 
     [Fact]
-    public void Sale_Cancel_WhenNoItems_ShouldThrowInvalidOperationException()
+    public void Sale_Cancel_WhenNoItems_ShouldThrowDomainException()
     {
         // Arrange
         var sale = new Sale("SALE-001", Guid.NewGuid(), Guid.NewGuid());
 
         // Act & Assert
         var action = () => sale.Cancel();
-        action.Should().Throw<InvalidOperationException>()
+        action.Should().Throw<DomainException>()
             .WithMessage("Cannot cancel a sale with no items");
     }
 } 
