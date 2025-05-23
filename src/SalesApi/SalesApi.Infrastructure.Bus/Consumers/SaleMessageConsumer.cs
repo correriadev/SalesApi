@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
-using SalesApi.Domain.Interfaces;
+using Rebus.Handlers;
 using SalesApi.Domain.Messages;
 
 namespace SalesApi.Infrastructure.Bus.Consumers;
 
-public class SaleMessageConsumer : IMessageHandler<CreateSaleMessage>, IMessageHandler<SaleCreatedMessage>
+public class SaleMessageConsumer : IHandleMessages<CreateSaleMessage>, IHandleMessages<SaleCreatedMessage>
 {
     private readonly ILogger<SaleMessageConsumer> _logger;
 

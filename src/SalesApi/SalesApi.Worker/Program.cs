@@ -2,6 +2,8 @@ using Microsoft.Extensions.Hosting;
 using SalesApi.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
 using SalesApi.Worker;
+using SalesApi.Domain.Messages;
+using SalesApi.Infrastructure.Bus;
 
 namespace SalesApi.Worker;
 
@@ -25,7 +27,13 @@ public class Program
         // Add worker service
         builder.Services.AddHostedService<Worker>();
 
+        // Add message bus for subscribers
+        builder.Services.AddMessageBusSubscriber(builder.Configuration);
+
         var app = builder.Build();
+
+        // Subscribe to Rebus messages so queues are created
+        await app.Services.StartMessageBusSubscriptionsAsync();
 
         // Configure health checks
         app.UseRouting();

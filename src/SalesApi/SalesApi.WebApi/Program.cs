@@ -9,6 +9,7 @@ using SalesApi.Infrastructure.Extensions;
 using SalesApi.Infrastructure.Bus;
 using SalesApi.WebApi.Swagger;
 using System.Text.Json.Serialization;
+using SalesApi.Domain.Messages;
 
 namespace SalesApi.WebApi;
 
@@ -70,7 +71,7 @@ public class Program
         builder.Services.AddInfrastructureDataSql(builder.Configuration);
 
         // Add Message Bus
-        builder.Services.AddMessageBus(builder.Configuration);
+        builder.Services.AddMessageBusPublisher(builder.Configuration);
 
         var app = builder.Build();
 
@@ -99,6 +100,7 @@ public class Program
 
         // Apply migrations
         await app.Services.MigrateDatabaseAsync();
+        await app.Services.StartMessageBusSubscriptionsAsync();
 
         app.Run();
     }

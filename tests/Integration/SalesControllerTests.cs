@@ -33,7 +33,7 @@ namespace SalesApi.IntegrationTests
             //_client = new HttpClient { BaseAddress = new Uri("http://localhost:53348/api/v1") };
         }
 
-        [Fact, TestPriority(0)]
+        [Fact, TestPriority(1)]
         public async Task Create_Products()
         {
             for (int i = 1; i <= 10; i++)
@@ -347,7 +347,7 @@ namespace SalesApi.IntegrationTests
             }
         }
 
-        [Fact, TestPriority(10)]
+        [Fact, TestPriority(7)]
         public async Task Should_Cancel_Sale()
         {
             // 1. Buscar vendas do endpoint
