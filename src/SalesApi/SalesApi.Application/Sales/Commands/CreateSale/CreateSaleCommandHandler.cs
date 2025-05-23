@@ -24,8 +24,6 @@ public class CreateSaleCommandHandler : IRequestHandler<CreateSaleCommand, SaleV
 
     public async Task<SaleViewModel.Response> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
     {
-        ValidateRequest(request);
-
         var sale = _mapper.Map<Sale>(request);
         
         await _saleRepository.AddAsync(sale, cancellationToken);
@@ -37,23 +35,5 @@ public class CreateSaleCommandHandler : IRequestHandler<CreateSaleCommand, SaleV
         }
 
         return _mapper.Map<SaleViewModel.Response>(sale);
-    }
-
-    private static void ValidateRequest(CreateSaleCommand request)
-    {
-        if (string.IsNullOrWhiteSpace(request.CustomerName))
-        {
-            throw new ArgumentException("Customer name cannot be empty.", nameof(request.CustomerName));
-        }
-
-        if (string.IsNullOrWhiteSpace(request.CustomerEmail))
-        {
-            throw new ArgumentException("Customer email cannot be empty.", nameof(request.CustomerEmail));
-        }
-
-        if (request.Items == null || !request.Items.Any())
-        {
-            throw new ArgumentException("Sale must have at least one item.", nameof(request.Items));
-        }
     }
 } 

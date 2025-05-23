@@ -26,8 +26,6 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
     public async Task<ProductViewModel.Response> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        ValidateRequest(request);
-
         var product = _mapper.Map<Product>(request);
         
         await _productRepository.AddAsync(product);
@@ -39,33 +37,5 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         }
 
         return _mapper.Map<ProductViewModel.Response>(product);
-    }
-
-    private static void ValidateRequest(CreateProductCommand request)
-    {
-        if (string.IsNullOrWhiteSpace(request.Title))
-        {
-            throw new ArgumentException("Product title cannot be empty.", nameof(request.Title));
-        }
-
-        if (string.IsNullOrWhiteSpace(request.Description))
-        {
-            throw new ArgumentException("Product description cannot be empty.", nameof(request.Description));
-        }
-
-        if (string.IsNullOrWhiteSpace(request.Category))
-        {
-            throw new ArgumentException("Product category cannot be empty.", nameof(request.Category));
-        }
-
-        if (string.IsNullOrWhiteSpace(request.Image))
-        {
-            throw new ArgumentException("Product image cannot be empty.", nameof(request.Image));
-        }
-
-        if (request.Price < 0)
-        {
-            throw new ArgumentException("Product price cannot be negative.", nameof(request.Price));
-        }
     }
 } 
