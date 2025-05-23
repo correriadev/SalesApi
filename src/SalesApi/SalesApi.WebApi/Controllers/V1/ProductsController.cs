@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SalesApi.Application.Products.Commands.CreateProduct;
@@ -12,10 +13,12 @@ namespace SalesApi.WebApi.Controllers.V1;
 public class ProductsController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
-    public ProductsController(IMediator mediator)
+    public ProductsController(IMediator mediator, IMapper mapper)
     {
         _mediator = mediator;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -30,15 +33,7 @@ public class ProductsController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<ProductViewModel.Response>>> CreateProduct(ProductViewModel.Request request)
     {
-        var command = new CreateProductCommand
-        {
-            Title = request.Title,
-            Description = request.Description,
-            Price = request.Price,
-            Category = request.Category,
-            Image = request.Image
-        };
-
+        var command = _mapper.Map<CreateProductCommand>(request);
         var result = await _mediator.Send(command);
         return Ok(ApiResponse<ProductViewModel.Response>.Success(result, "Product successfully created"));
     }

@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -13,12 +14,14 @@ namespace SalesApi.Tests.WebApi.Controllers;
 public class ProductsControllerTests
 {
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
     private readonly ProductsController _controller;
 
     public ProductsControllerTests()
     {
         _mediator = Substitute.For<IMediator>();
-        _controller = new ProductsController(_mediator);
+        _mapper = Substitute.For<IMapper>();
+        _controller = new ProductsController(_mediator, _mapper);
     }
 
     [Fact]
@@ -34,6 +37,15 @@ public class ProductsControllerTests
             Image = "test.jpg"
         };
 
+        var command = new CreateProductCommand
+        {
+            Title = request.Title,
+            Description = request.Description,
+            Price = request.Price,
+            Category = request.Category,
+            Image = request.Image
+        };
+
         var response = new ProductViewModel.Response
         {
             Id = Guid.NewGuid(),
@@ -44,8 +56,8 @@ public class ProductsControllerTests
             Image = request.Image
         };
 
-        _mediator.Send(Arg.Any<CreateProductCommand>(), Arg.Any<CancellationToken>())
-            .Returns(response);
+        _mapper.Map<CreateProductCommand>(request).Returns(command);
+        _mediator.Send(command, Arg.Any<CancellationToken>()).Returns(response);
 
         // Act
         var result = await _controller.CreateProduct(request);

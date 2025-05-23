@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SalesApi.Application.Sales.Commands.CreateSale;
@@ -12,10 +13,12 @@ namespace SalesApi.WebApi.Controllers.V1;
 public class SalesController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
 
-    public SalesController(IMediator mediator)
+    public SalesController(IMediator mediator, IMapper mapper)
     {
         _mediator = mediator;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -30,13 +33,7 @@ public class SalesController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<SaleViewModel.Response>>> CreateSale(SaleViewModel.Request request)
     {
-        var command = new CreateSaleCommand
-        {
-            CustomerName = request.CustomerName,
-            CustomerEmail = request.CustomerEmail,
-            Items = request.Items
-        };
-
+        var command = _mapper.Map<CreateSaleCommand>(request);
         var result = await _mediator.Send(command);
         return Ok(ApiResponse<SaleViewModel.Response>.Success(result, "Sale successfully created"));
     }

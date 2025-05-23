@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
@@ -13,12 +14,14 @@ namespace SalesApi.Tests.WebApi.Controllers;
 public class SalesControllerTests
 {
     private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
     private readonly SalesController _controller;
 
     public SalesControllerTests()
     {
         _mediator = Substitute.For<IMediator>();
-        _controller = new SalesController(_mediator);
+        _mapper = Substitute.For<IMapper>();
+        _controller = new SalesController(_mediator, _mapper);
     }
 
     [Fact]
@@ -41,6 +44,13 @@ public class SalesControllerTests
             }
         };
 
+        var command = new CreateSaleCommand
+        {
+            CustomerName = request.CustomerName,
+            CustomerEmail = request.CustomerEmail,
+            Items = request.Items
+        };
+
         var response = new SaleViewModel.Response
         {
             Id = Guid.NewGuid(),
@@ -52,8 +62,8 @@ public class SalesControllerTests
             Items = request.Items
         };
 
-        _mediator.Send(Arg.Any<CreateSaleCommand>(), Arg.Any<CancellationToken>())
-            .Returns(response);
+        _mapper.Map<CreateSaleCommand>(request).Returns(command);
+        _mediator.Send(command, Arg.Any<CancellationToken>()).Returns(response);
 
         // Act
         var result = await _controller.CreateSale(request);
@@ -105,13 +115,14 @@ public class SalesControllerTests
     {
         // Arrange
         var id = Guid.NewGuid();
+        var response = new SaleViewModel.CancelResponse();
 
         // Act
         var result = await _controller.Cancel(id);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var response = Assert.IsType<SaleViewModel.CancelResponse>(okResult.Value);
-        Assert.NotNull(response);
+        var cancelResponse = Assert.IsType<SaleViewModel.CancelResponse>(okResult.Value);
+        Assert.NotNull(cancelResponse);
     }
 } 
