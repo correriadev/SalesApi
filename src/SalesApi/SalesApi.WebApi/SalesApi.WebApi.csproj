@@ -19,6 +19,7 @@
     <ProjectReference Include="..\SalesApi.Infrastructure.Data.Sql\SalesApi.Infrastructure.Data.Sql.csproj" />
     <ProjectReference Include="..\SalesApi.ViewModel\SalesApi.ViewModel.csproj" />
     <ProjectReference Include="..\SalesApi.Application\SalesApi.Application.csproj" />
+    <ProjectReference Include="..\SalesApi.Infrastructure.Bus\SalesApi.Infrastructure.Bus.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\shared-settings\sharedSettings.json">

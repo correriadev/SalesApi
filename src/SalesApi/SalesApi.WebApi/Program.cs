@@ -1,20 +1,14 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using SalesApi.Infrastructure.Extensions;
-using SalesApi.Infrastructure.Data.Sql.Extensions;
-using SalesApi.WebApi.Swagger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.OpenApi.Models;
+using SalesApi.Api.Middleware;
 using SalesApi.Application;
 using SalesApi.Infrastructure;
 using SalesApi.Infrastructure.Data.Sql;
-using SalesApi.WebApi.Controllers.V1;
+using SalesApi.Infrastructure.Data.Sql.Extensions;
+using SalesApi.Infrastructure.Extensions;
+using SalesApi.Infrastructure.Bus;
+using SalesApi.WebApi.Swagger;
 using System.Text.Json.Serialization;
-using SalesApi.Api.Middleware;
 
 namespace SalesApi.WebApi;
 
@@ -74,6 +68,9 @@ public class Program
         builder.Services.AddInfrastructure();
 
         builder.Services.AddInfrastructureDataSql(builder.Configuration);
+
+        // Add Message Bus
+        builder.Services.AddMessageBus(builder.Configuration);
 
         var app = builder.Build();
 

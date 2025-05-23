@@ -1,9 +1,11 @@
-using System;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Rebus.Config;
 using Rebus.Retry.Simple;
-using SalesApi.Infrastructure.Bus.Handlers;
+using SalesApi.Domain.Interfaces;
+using SalesApi.Domain.Messages;
+using SalesApi.Infrastructure.Bus.Consumers;
+using SalesApi.Infrastructure.Bus.Publishers;
 
 namespace SalesApi.Infrastructure.Bus;
 
@@ -21,10 +23,17 @@ public static class MessageBusConfiguration
 
         services.AddRebus(configure => configure
             .Transport(t => t.UseRabbitMq(connectionString, queueName))
-            .Options(o => o.SimpleRetryStrategy(maxDeliveryAttempts: 3)));
+            .Options(o => o.RetryStrategy(maxDeliveryAttempts: 3)));
 
         // Register message handlers
-        services.AddScoped<IMessageHandler<SaleCreated>, SaleCreatedHandler>();
+        services.AddScoped<IMessageHandler<CreateProductMessage>, ProductMessageConsumer>();
+        services.AddScoped<IMessageHandler<ProductCreatedMessage>, ProductMessageConsumer>();
+        services.AddScoped<IMessageHandler<CreateSaleMessage>, SaleMessageConsumer>();
+        services.AddScoped<IMessageHandler<SaleCreatedMessage>, SaleMessageConsumer>();
+
+        // Register publishers
+        services.AddScoped<IProductPublisher, ProductPublisher>();
+        services.AddScoped<ISalePublisher, SalePublisher>();
 
         services.AddSingleton<IMessageBus>(sp => new RebusMessageBus(connectionString, queueName));
 

@@ -15,4 +15,8 @@
     <PackageReference Include="Rebus.ServiceProvider" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SalesApi.Domain\SalesApi.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

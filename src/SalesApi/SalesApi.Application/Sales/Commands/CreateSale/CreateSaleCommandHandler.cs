@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using SalesApi.Domain.Entities;
+using SalesApi.Domain.Interfaces;
 using SalesApi.Domain.Repositories;
 using SalesApi.ViewModel.V1.Sales;
 
@@ -11,15 +12,18 @@ public class CreateSaleCommandHandler : IRequestHandler<CreateSaleCommand, SaleV
     private readonly ISaleRepository _saleRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ISalePublisher _salePublisher;
 
     public CreateSaleCommandHandler(
         ISaleRepository saleRepository,
         IUnitOfWork unitOfWork,
-        IMapper mapper)
+        IMapper mapper,
+        ISalePublisher salePublisher)
     {
         _saleRepository = saleRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _salePublisher = salePublisher;
     }
 
     public async Task<SaleViewModel.Response> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
@@ -33,6 +37,8 @@ public class CreateSaleCommandHandler : IRequestHandler<CreateSaleCommand, SaleV
         {
             throw new Exception("Failed to save sale to the database.");
         }
+
+        await _salePublisher.PublishCreateSaleAsync(sale);
 
         return _mapper.Map<SaleViewModel.Response>(sale);
     }

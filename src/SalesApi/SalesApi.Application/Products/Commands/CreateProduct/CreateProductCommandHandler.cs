@@ -1,10 +1,9 @@
 using AutoMapper;
 using MediatR;
 using SalesApi.Domain.Entities;
+using SalesApi.Domain.Interfaces;
 using SalesApi.Domain.Repositories;
-using SalesApi.Domain.ValueObjects;
 using SalesApi.ViewModel.V1.Products;
-using System;
 
 namespace SalesApi.Application.Products.Commands.CreateProduct;
 
@@ -13,15 +12,18 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
     private readonly IProductRepository _productRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IProductPublisher _productPublisher;
 
     public CreateProductCommandHandler(
         IProductRepository productRepository,
         IUnitOfWork unitOfWork,
-        IMapper mapper)
+        IMapper mapper,
+        IProductPublisher productPublisher)
     {
         _productRepository = productRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _productPublisher = productPublisher;
     }
 
     public async Task<ProductViewModel.Response> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -35,6 +37,8 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         {
             throw new Exception("Failed to save product to the database.");
         }
+
+        await _productPublisher.PublishCreateProductAsync(product);
 
         return _mapper.Map<ProductViewModel.Response>(product);
     }

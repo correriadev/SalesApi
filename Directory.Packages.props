@@ -19,6 +19,7 @@
     <PackageVersion Include="Rebus" Version="8.8.0" />
     <PackageVersion Include="Rebus.RabbitMq" Version="10.0.1" />
     <PackageVersion Include="Rebus.ServiceProvider" Version="10.3.0" />
+    <PackageVersion Include="Rebus.SqlServer" Version="8.3.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageVersion Include="Ocelot" Version="22.0.1" />
     <PackageVersion Include="Npgsql" Version="8.0.3" />

@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Rebus.Activation;
 using Rebus.Bus;
 using Rebus.Config;
 using Rebus.Retry.Simple;
@@ -16,7 +18,7 @@ public class RebusMessageBus : IMessageBus, IDisposable
     {
         _bus = Configure.With(new BuiltinHandlerActivator())
             .Transport(t => t.UseRabbitMq(connectionString, queueName))
-            .Options(o => o.SimpleRetryStrategy(maxDeliveryAttempts: 3))
+            .Options(o => o.RetryStrategy(maxDeliveryAttempts: 3))
             .Start();
     }
 
