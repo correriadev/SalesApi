@@ -3,8 +3,10 @@ using MediatR;
 using NSubstitute;
 using SalesApi.Application.Products.Commands.CreateProduct;
 using SalesApi.Domain.Entities;
+using SalesApi.Domain.Interfaces;
 using SalesApi.Domain.Repositories;
 using SalesApi.Domain.ValueObjects;
+using SalesApi.Infrastructure.Bus.Publishers;
 using SalesApi.ViewModel.V1.Products;
 using System;
 using System.Threading;
@@ -18,12 +20,14 @@ public class CreateProductCommandHandlerTests
     private readonly IProductRepository _productRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IProductPublisher _productPublisher;
     private readonly CreateProductCommandHandler _handler;
 
     public CreateProductCommandHandlerTests()
     {
         _productRepository = Substitute.For<IProductRepository>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
+        _productPublisher = Substitute.For<IProductPublisher>();
 
         var configuration = new MapperConfiguration(cfg =>
         {
@@ -34,7 +38,8 @@ public class CreateProductCommandHandlerTests
         _handler = new CreateProductCommandHandler(
             _productRepository,
             _unitOfWork,
-            _mapper);
+            _mapper,
+            _productPublisher);
     }
 
     [Fact]

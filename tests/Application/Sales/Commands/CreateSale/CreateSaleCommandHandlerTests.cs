@@ -4,6 +4,7 @@ using MediatR;
 using NSubstitute;
 using SalesApi.Application.Sales.Commands.CreateSale;
 using SalesApi.Domain.Entities;
+using SalesApi.Domain.Interfaces;
 using SalesApi.Domain.Repositories;
 using SalesApi.Domain.ValueObjects;
 using SalesApi.ViewModel.V1.Sales;
@@ -16,6 +17,7 @@ public class CreateSaleCommandHandlerTests
     private readonly ISaleRepository _saleRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ISalePublisher _salePublisher;
     private readonly CreateSaleCommandHandler _handler;
 
     public CreateSaleCommandHandlerTests()
@@ -23,7 +25,8 @@ public class CreateSaleCommandHandlerTests
         _saleRepository = Substitute.For<ISaleRepository>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
         _mapper = Substitute.For<IMapper>();
-        _handler = new CreateSaleCommandHandler(_saleRepository, _unitOfWork, _mapper);
+        _salePublisher = Substitute.For<ISalePublisher>();
+        _handler = new CreateSaleCommandHandler(_saleRepository, _unitOfWork, _mapper, _salePublisher);
     }
 
     [Fact]
