@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using FluentAssertions;
 using SalesApi.ViewModel.V1.Products;
 using SalesApi.ViewModel.V1.Sales;
+using SalesApi.ViewModel.V1.Common;
 
 namespace SalesApi.IntegrationTests
 {
@@ -72,14 +73,14 @@ namespace SalesApi.IntegrationTests
             responseProducts.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var productsResponse = JsonConvert.DeserializeObject<List<ProductViewModel.Response>>(jsonResponse);
+            var productsResponse = JsonConvert.DeserializeObject<ApiResponse<List<ProductViewModel.Response>>>(jsonResponse);
 
             Assert.NotNull(productsResponse);
-            Assert.True(productsResponse.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
+            Assert.True(productsResponse.Data.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
 
             // 2. Selecionar dois produtos
-            var produto1 = productsResponse[1]; // Segundo produto da lista
-            var produto2 = productsResponse[0]; // Primeiro produto da lista
+            var produto1 = productsResponse.Data[1]; // Segundo produto da lista
+            var produto2 = productsResponse.Data[0]; // Primeiro produto da lista
 
             // 3. Criar a nova venda
             var novaVenda = new SaleViewModel.Request
@@ -122,14 +123,14 @@ namespace SalesApi.IntegrationTests
             responseProducts.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var productsResponse = JsonConvert.DeserializeObject<List<ProductViewModel.Response>>(jsonResponse);
+            var productsResponse = JsonConvert.DeserializeObject<ApiResponse<List<ProductViewModel.Response>>>(jsonResponse);
 
             Assert.NotNull(productsResponse);
-            Assert.True(productsResponse.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
+            Assert.True(productsResponse.Data.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
 
             // 2. Selecionar dois produtos
-            var produto1 = productsResponse[1]; // Segundo produto da lista
-            var produto2 = productsResponse[0]; // Primeiro produto da lista
+            var produto1 = productsResponse.Data[1]; // Segundo produto da lista
+            var produto2 = productsResponse.Data[0]; // Primeiro produto da lista
 
             // 3. Criar a nova venda
             var novaVenda = new SaleViewModel.Request
@@ -180,14 +181,14 @@ namespace SalesApi.IntegrationTests
             responseProducts.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var productsResponse = JsonConvert.DeserializeObject<List<ProductViewModel.Response>>(jsonResponse);
+            var productsResponse = JsonConvert.DeserializeObject<ApiResponse<List<ProductViewModel.Response>>>(jsonResponse);
 
             Assert.NotNull(productsResponse);
-            Assert.True(productsResponse.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
+            Assert.True(productsResponse.Data.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
 
             // 2. Selecionar dois produtos
-            var produto1 = productsResponse[1]; // Segundo produto da lista
-            var produto2 = productsResponse[0]; // Primeiro produto da lista
+            var produto1 = productsResponse.Data[1]; // Segundo produto da lista
+            var produto2 = productsResponse.Data[0]; // Primeiro produto da lista
 
             // 3. Criar a nova venda
             var novaVenda = new SaleViewModel.Request
@@ -234,15 +235,15 @@ namespace SalesApi.IntegrationTests
             responseProducts.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var productsResponse = JsonConvert.DeserializeObject<List<ProductViewModel.Response>>(jsonResponse);
+            var productsResponse = JsonConvert.DeserializeObject<ApiResponse<List<ProductViewModel.Response>>> (jsonResponse);
 
             Assert.NotNull(productsResponse);
-            Assert.True(productsResponse.Count >= 3, "O endpoint deve retornar pelo menos 3 produtos.");
+            Assert.True(productsResponse.Data.Count >= 3, "O endpoint deve retornar pelo menos 3 produtos.");
 
             // 2. Selecionar três produtos
-            var produto1 = productsResponse[1]; // Segundo produto da lista
-            var produto2 = productsResponse[0]; // Primeiro produto da lista
-            var produto3 = productsResponse[2]; // Terceiro produto da lista
+            var produto1 = productsResponse.Data[1]; // Segundo produto da lista
+            var produto2 = productsResponse.Data[0]; // Primeiro produto da lista
+            var produto3 = productsResponse.Data[2]; // Terceiro produto da lista
 
             // 3. Criar a nova venda
             var novaVenda = new SaleViewModel.Request
@@ -297,14 +298,14 @@ namespace SalesApi.IntegrationTests
             responseProducts.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseProducts.Content.ReadAsStringAsync();
-            var productsResponse = JsonConvert.DeserializeObject<List<ProductViewModel.Response>>(jsonResponse);
+            var productsResponse = JsonConvert.DeserializeObject<ApiResponse<List<ProductViewModel.Response>>>(jsonResponse);
 
             Assert.NotNull(productsResponse);
-            Assert.True(productsResponse.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
+            Assert.True(productsResponse.Data.Count >= 2, "O endpoint deve retornar pelo menos 2 produtos.");
 
             // 2. Selecionar dois produtos
-            var produto1 = productsResponse[1]; // Segundo produto da lista
-            var produto2 = productsResponse[0]; // Primeiro produto da lista
+            var produto1 = productsResponse.Data[1]; // Segundo produto da lista
+            var produto2 = productsResponse.Data[0]; // Primeiro produto da lista
 
             // 3. Criar a nova venda
             var novaVenda = new SaleViewModel.Request
@@ -354,13 +355,13 @@ namespace SalesApi.IntegrationTests
             responseSales.EnsureSuccessStatusCode();
 
             var jsonResponse = await responseSales.Content.ReadAsStringAsync();
-            var salesResponse = JsonConvert.DeserializeObject<List<SaleViewModel.Response>>(jsonResponse);
+            var salesResponse = JsonConvert.DeserializeObject<ApiResponse<List<SaleViewModel.Response>>>(jsonResponse);
 
             Assert.NotNull(salesResponse);
-            Assert.True(salesResponse.Count >= 1, "O endpoint deve retornar pelo menos 1 venda.");
+            Assert.True(salesResponse.Data.Count >= 1, "O endpoint deve retornar pelo menos 1 venda.");
 
             // 2. Selecionar uma venda
-            var sale = salesResponse[0];
+            var sale = salesResponse.Data[0];
 
             var response = await _client.DeleteAsync($"/sales/{sale.Id}");
 

@@ -1,13 +1,14 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
 using SalesApi.Application.Sales.Commands.CreateSale;
 using SalesApi.Application.Sales.Queries.GetAllSales;
-using SalesApi.WebApi.Controllers.V1;
+using SalesApi.ViewModel.V1.Common;
 using SalesApi.ViewModel.V1.Sales;
+using SalesApi.WebApi.Controllers.V1;
 using Xunit;
-using MediatR;
 
-namespace SalesApi.Tests.WebApi;
+namespace SalesApi.Tests.WebApi.Controllers;
 
 public class SalesControllerTests
 {
@@ -21,7 +22,7 @@ public class SalesControllerTests
     }
 
     [Fact]
-    public async Task Create_WithValidRequest_ShouldReturnCreatedResult()
+    public async Task CreateSale_ValidRequest_ReturnsOkResult()
     {
         // Arrange
         var request = new SaleViewModel.Request
@@ -55,15 +56,19 @@ public class SalesControllerTests
             .Returns(response);
 
         // Act
-        var result = await _controller.Create(request);
+        var result = await _controller.CreateSale(request);
 
         // Assert
-        var createdResult = Assert.IsType<CreatedAtActionResult>(result);
-        Assert.Equal(response, createdResult.Value);
+        var okResult = Assert.IsType<ActionResult<ApiResponse<SaleViewModel.Response>>>(result);
+        var apiResponse = Assert.IsType<OkObjectResult>(okResult.Result).Value as ApiResponse<SaleViewModel.Response>;
+        Assert.NotNull(apiResponse);
+        Assert.Equal("success", apiResponse.Status);
+        Assert.Equal(response, apiResponse.Data);
+        Assert.Equal("Sale successfully created", apiResponse.Message);
     }
 
     [Fact]
-    public async Task GetAll_ShouldReturnOkResult()
+    public async Task GetAllSales_ReturnsOkResult()
     {
         // Arrange
         var sales = new List<SaleViewModel.Response>
@@ -84,11 +89,15 @@ public class SalesControllerTests
             .Returns(sales);
 
         // Act
-        var result = await _controller.GetAll();
+        var result = await _controller.GetAllSales();
 
         // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(sales, okResult.Value);
+        var okResult = Assert.IsType<ActionResult<ApiResponse<IEnumerable<SaleViewModel.Response>>>>(result);
+        var apiResponse = Assert.IsType<OkObjectResult>(okResult.Result).Value as ApiResponse<IEnumerable<SaleViewModel.Response>>;
+        Assert.NotNull(apiResponse);
+        Assert.Equal("success", apiResponse.Status);
+        Assert.Equal(sales, apiResponse.Data);
+        Assert.Equal("Sales retrieved successfully", apiResponse.Message);
     }
 
     [Fact]
