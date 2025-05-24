@@ -1,28 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using Newtonsoft.Json;
 using FluentAssertions;
+using Newtonsoft.Json;
+using SalesApi.ViewModel.V1.Common;
 using SalesApi.ViewModel.V1.Products;
 using SalesApi.ViewModel.V1.Sales;
-using SalesApi.ViewModel.V1.Common;
+using System.Text;
+using Xunit;
 
-namespace SalesApi.IntegrationTests
+namespace SalesApi.Tests
 {
+    [AttributeUsage(AttributeTargets.Method)]
     public class TestPriorityAttribute : Attribute
     {
         public int Priority { get; }
-
-        public TestPriorityAttribute(int priority)
-        {
-            Priority = priority;
-        }
+        public TestPriorityAttribute(int priority) => Priority = priority;
     }
 
-    [TestCaseOrderer("SalesApi.IntegrationTests.CustomTestOrderer", "SalesApi.IntegrationTests")]
+    [TestCaseOrderer("SalesApi.Tests.CustomTestOrderer", "SalesApi.Tests")]
     public class SalesApiIntegrationTests
     {
         private readonly HttpClient _client;
@@ -36,6 +29,7 @@ namespace SalesApi.IntegrationTests
         [Fact, TestPriority(1)]
         public async Task Create_Products()
         {
+            Task.Delay(3000).Wait();
             for (int i = 1; i <= 10; i++)
             {
                 var newProduct = new ProductViewModel.Request
@@ -68,6 +62,7 @@ namespace SalesApi.IntegrationTests
         [Fact, TestPriority(2)]
         public async Task Should_Create_Sale_With_NoDiscount()
         {
+            Task.Delay(3000).Wait();
             // 1. Buscar produtos do endpoint
             var responseProducts = await _client.GetAsync("/products");
             responseProducts.EnsureSuccessStatusCode();
@@ -118,6 +113,7 @@ namespace SalesApi.IntegrationTests
         [Fact, TestPriority(3)]
         public async Task Should_Create_Sale_With_10PercentDiscount()
         {
+            Task.Delay(3000).Wait();
             // 1. Buscar produtos do endpoint
             var responseProducts = await _client.GetAsync("/products");
             responseProducts.EnsureSuccessStatusCode();
@@ -176,6 +172,7 @@ namespace SalesApi.IntegrationTests
         [Fact, TestPriority(4)]
         public async Task Should_Create_Sale_With_10PercentDiscount_20Prod()
         {
+            Task.Delay(3000).Wait();
             // 1. Buscar produtos do endpoint
             var responseProducts = await _client.GetAsync("/products");
             responseProducts.EnsureSuccessStatusCode();
@@ -230,6 +227,7 @@ namespace SalesApi.IntegrationTests
         [Fact, TestPriority(5)]
         public async Task Should_Apply_20Percent_Discount_For_10_To_20_Items()
         {
+            Task.Delay(3000).Wait();
             // 1. Buscar produtos do endpoint
             var responseProducts = await _client.GetAsync("/products");
             responseProducts.EnsureSuccessStatusCode();
@@ -293,6 +291,7 @@ namespace SalesApi.IntegrationTests
         [Fact, TestPriority(6)]
         public async Task Should_Not_Allow_More_Than_20_Items()
         {
+            Task.Delay(3000).Wait();
             // 1. Buscar produtos do endpoint
             var responseProducts = await _client.GetAsync("/products");
             responseProducts.EnsureSuccessStatusCode();
@@ -350,6 +349,7 @@ namespace SalesApi.IntegrationTests
         [Fact, TestPriority(7)]
         public async Task Should_Cancel_Sale()
         {
+            Task.Delay(3000).Wait();
             // 1. Buscar vendas do endpoint
             var responseSales = await _client.GetAsync("/sales");
             responseSales.EnsureSuccessStatusCode();

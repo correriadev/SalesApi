@@ -4,7 +4,7 @@ using System.Linq;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace SalesApi.IntegrationTests;
+namespace SalesApi.Tests;
 
 public class CustomTestOrderer : ITestCaseOrderer
 {
@@ -20,7 +20,7 @@ public class CustomTestOrderer : ITestCaseOrderer
             {
                 priority = attr.GetNamedArgument<int>("Priority");
             }
-
+   
             GetOrCreate(sortedMethods, priority).Add(testCase);
         }
 
