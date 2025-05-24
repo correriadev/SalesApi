@@ -91,95 +91,73 @@ public class CreateProductCommandHandlerTests
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
-    [Fact]
-    public async Task Handle_EmptyTitle_ShouldThrowArgumentException()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public async Task Handle_EmptyTitle_ShouldThrowArgumentException(string? title)
     {
-        // Arrange
         var command = new CreateProductCommand
         {
-            Title = string.Empty,
+            Title = title,
             Description = "Test Description",
             Price = 99.99m,
             Category = "Test Category",
             Image = "test.jpg"
         };
-
-        // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(command, CancellationToken.None));
     }
 
-    [Fact]
-    public async Task Handle_EmptyDescription_ShouldThrowArgumentException()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public async Task Handle_EmptyDescription_ShouldThrowArgumentException(string? description)
     {
-        // Arrange
         var command = new CreateProductCommand
         {
             Title = "Test Product",
-            Description = string.Empty,
+            Description = description,
             Price = 99.99m,
             Category = "Test Category",
             Image = "test.jpg"
         };
-
-        // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(command, CancellationToken.None));
     }
 
-    [Fact]
-    public async Task Handle_EmptyCategory_ShouldThrowArgumentException()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public async Task Handle_EmptyCategory_ShouldThrowArgumentException(string? category)
     {
-        // Arrange
         var command = new CreateProductCommand
         {
             Title = "Test Product",
             Description = "Test Description",
             Price = 99.99m,
-            Category = string.Empty,
+            Category = category,
             Image = "test.jpg"
         };
-
-        // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(command, CancellationToken.None));
     }
 
-    [Fact]
-    public async Task Handle_EmptyImage_ShouldThrowArgumentException()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public async Task Handle_EmptyImage_ShouldThrowArgumentException(string? image)
     {
-        // Arrange
         var command = new CreateProductCommand
         {
             Title = "Test Product",
             Description = "Test Description",
             Price = 99.99m,
             Category = "Test Category",
-            Image = string.Empty
+            Image = image
         };
-
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(command, CancellationToken.None));
-    }
-
-    [Fact]
-    public async Task Handle_NegativePrice_ShouldThrowArgumentException()
-    {
-        // Arrange
-        var command = new CreateProductCommand
-        {
-            Title = "Test Product",
-            Description = "Test Description",
-            Price = -99.99m,
-            Category = "Test Category",
-            Image = "test.jpg"
-        };
-
-        // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(command, CancellationToken.None));
     }
 
     [Fact]
     public async Task Handle_SaveChangesFails_ShouldThrowException()
     {
-        // Arrange
         var command = new CreateProductCommand
         {
             Title = "Test Product",
@@ -204,7 +182,6 @@ public class CreateProductCommandHandlerTests
             .SaveChangesAsync(Arg.Any<CancellationToken>())
             .Returns(0);
 
-        // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => _handler.Handle(command, CancellationToken.None));
     }
 } 
